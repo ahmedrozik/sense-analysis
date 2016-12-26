@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Channels - SenseEgypt</title>
+  <meta content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <meta name="description" content="Open source data platform and API for the Internet of Things.">
+  <meta name="keywords" content="iot, internet of things, iot platform, github, open source, internet of things platform, iobridge">
+
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link href="css/font-awesome.min.css" media="screen" rel="stylesheet" />
+  <link data-turbolinks-track="true" href="/assets/application-079077967c5fcf0b164b080bc2e27c83.css" media="screen" rel="stylesheet" />
+
+
+  
+ <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type='text/javascript' src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+  <script data-turbolinks-track="true" src="js/application-2fa1f01b48ec9e72eaa3ad5c1f134298.js"></script>
+
+    <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20107670-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  
+
+
+
+  
+  
+  
+  //Add table for Actuators Rules 
+  
+  function addRow() {
+      $('#mydata').show();
+
+  
+   var itemSelected = $("#deviceslist option:selected").last();
+		var item = itemSelected.val();
+		var sensorID;
+		if(itemSelected.index() != 0){
+		
+		var sensorData=item.split("|");
+        sensorID=sensorData[0];
+        }else{
+          sensorID="No";
+        }
+
+
+
+
+
+         
+    var minThreshold = document.getElementById("channel_minThreshold");
+	var maxThreshold = document.getElementById("channel_maxThreshold");
+    var command = document.getElementById("channel_actuatorCommand");
+	
+    var table = document.getElementById("myTableData");
+
+    var rowCount = table.rows.length;
+    var row = table.insertRow(rowCount);
+
+    row.insertCell(0).innerHTML= '<input type="button" value = "Delete" onClick="Javacsript:deleteRow(this)">';
+    row.insertCell(1).innerHTML= sensorID;
+    row.insertCell(2).innerHTML= minThreshold.value;
+	    row.insertCell(3).innerHTML= maxThreshold.value;
+		    row.insertCell(4).innerHTML= command.value;
+			
+			
+			minThreshold.value="";
+			maxThreshold.value="";
+			command.value="";
+
+
+}
+
+function deleteRow(obj) {
+     
+    var index = obj.parentNode.parentNode.rowIndex;
+    var table = document.getElementById("myTableData");
+    table.deleteRow(index);
+   
+}
+
+function addTable() {
+     
+    var myTableDiv = document.getElementById("myDynamicTable");
+     
+    var table = document.createElement('TABLE');
+    table.border='1';
+   
+    var tableBody = document.createElement('TBODY');
+    table.appendChild(tableBody);
+     
+    for (var i=0; i<3; i++){
+       var tr = document.createElement('TR');
+       tableBody.appendChild(tr);
+      
+       for (var j=0; j<4; j++){
+           var td = document.createElement('TD');
+           td.width='75';
+           td.appendChild(document.createTextNode("Cell " + i + "," + j));
+           tr.appendChild(td);
+       }
+    }
+    myTableDiv.appendChild(table);
+   
+}
+
+function load() {
+   
+    console.log("Page load finished");
+
+}
+
+
+
+
+
+
+
+</script>
+
+
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+	 padding: 0;
+  padding-bottom: .5em;
+  padding-top: .5em;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+</style>
+
+
+
+
+
+
+
+
+  
+</head>
+
+
+
+  <body>
+
+    <div id="wrap">
+      <div class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/">
+       <img alt="SenseEgypt logo" height="38" src="images/logo-icon.png"  style="padding: 0 8px; margin-top: 7px;" width="188" />
+
+</a>    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+
+
+          <li class="active dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Channels <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="channel">My Channels</a></li>
+             
+            </ul>
+          </li>
+      <!--      <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="">My Account</a></li>
+              <li><a href="">Edit Account</a></li>
+            
+            </ul>
+          </li>-->
+
+
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+
+     <!--   <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/docs">Documentation</a></li>
+            <li><a href="/docs/tutorials/">Tutorials</a></li>
+            
+          </ul>
+        </li>  -->
+
+      
+
+          <li><a href="/logout">Sign Out</a></li>
+
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</div>
+
+
+      <div class="container">
+        
+
+        <div class="row">
+  <div class="col-xs-12 col-sm-6" style="float: left;">
+
+    <h4 class="breadcrumb">My Channels</h4>
+
+    <div class="col-pad" style="display: inline;position: relative;float: left;"data-no-turbolink>
+   
+	                 <div>
+	                  <input class="btn btn-danger btn-lg" style="Height:50px;" type="submit"  id="addNewChannel" value="New Device" />
+	                    <input name="authenticity_token" type="hidden" value="do2TjaIOv5HY/HkU9iwIFAPuegJWbJQGyekO4wBcLfM=" />
+	                 </div>
+	               <br>
+
+
+
+        <table class="table table-striped table-bordered tablesorter" id="sensorsTable">
+          <thead>
+            <tr>
+              <th>Name <i class="fa fa-unsorted"></i></th>
+              <th>Created <i class="fa fa-unsorted"></i></td>
+            </tr>
+          </thead>
+          <tbody>
+
+        <!--      <tr>
+                <td>
+
+                  <h4 style="margin-top: 0;">
+                    <a href="/channels/38027">
+                      <i class="fa fa-lock fa-fw"></i>
+                      Channel 38027
+                    </a>
+                  </h4>
+                  <div class="btn-group btn-group-sm hidden-xs hidden-sm">
+                    <a class="btn btn-default" href="/channels/38027#privateview">Private</a>
+                    <a class="btn btn-default" href="/channels/38027#publicview">Public</a>
+                    <a class="btn btn-default" href="/channels/38027#channelsettings">Settings</a>
+                    <a class="btn btn-default" href="/channels/38027#apikeys">API Key</a>
+                    <a class="btn btn-default" href="/channels/38027#dataimport">Data Import / Export</a>
+                  </div>
+				    <h4 style="margin-top: 15px;">
+                   MQTT ID :
+                  </h4>
+				  
+
+                </td>
+                <td>2015-05-15</td>
+              </tr> -->
+		
+          </tbody>
+        </table>
+
+
+    </div>
+  </div>
+
+  <div id="sidebar" class="col-xs-12 col-sm-6" >
+
+	<div id="channelsettings" class="ui-tabs-panel ui-widget-content ui-corner-bottom" style="position:relative;float=right;"  hidden>
+	
+
+
+
+
+   
+	 <form accept-charset="UTF-8" id="addSensorForm"  method="post">
+    <table class="table_no_header">
+	
+	<tr>
+		<td> Select Sensor/Actuator Type</td>
+	<td>
+
+	<select id="deviceType" class="devicesSelect">
+      <option value="sensor">Sensor</option>
+      <option value="actuator">Actuator</option>
+    </select>
+</td>
+    </tr>
+    
+
+	  <br>
+      <tr>
+        <td class="left">Name</td>
+        <td><input id="channel_name" name="channel_name" type="text" /></td>
+      </tr>
+	  <br> <br>
+      <tr>
+        <td class="left">Description</td>
+        <td><textarea cols="30" id="channel_description" name="channel_description" rows="4"></textarea></td>
+      </tr>
+	   <br>
+
+          <tr>
+        <td class="left">Mobile No </td>
+        <td><input  id="channel_mob" name="channel_mob" type="text" /></td>
+      </tr>
+    
+      <tr>
+        <td class="left">Latitude</td>
+        <td><input id="channel_latitude" name="channel_latitude" type="text" /></td>
+      </tr>
+      <tr>
+        <td class="left">Longitude</td>
+        <td><input id="channel_longitude" name="channel_longitude" type="text"/></td>
+      </tr>
+    
+      <tr>
+        <td class="left">Field </td>
+        <td><input class="field" id="channel_field1" name="channel_field1" type="text" /></td>
+      </tr>
+	  
+	      <tr>
+        <td class="left">SMS</td>
+        <td><input type="checkbox" name="sms" value="sms" id="sms"> </td>
+		<td class="left">Email</td>
+        <td><input type="checkbox" name="email" value="email" id="email"> </td>
+      </tr>
+	  
+	   	<tr>
+		
+		<td> Trigger Actuator </td>
+	<td>
+
+	<select id="deviceslist" class="devicesSelect">
+      <option value="Please Select">Please Select</option>
+    </select>
+</td>
+
+
+    <td class="left">Actuator Command</td>
+        <td><input id="channel_actuatorCommand" name="channel_actuatorCommand" type="text"  /></td
+
+    </tr>
+	
+       <tr>
+        <td class="left">Minimum Threshold</td>
+        <td><input  id="channel_minThreshold" name="channel_minThreshold" type="text" /></td>
+      
+	   
+        <td class="left">Maxmimum Threshold</td>
+        <td><input id="channel_maxThreshold" name="channel_maxThreshold" type="text"  /></td>
+      </tr>
+	 <tr>
+	 <td>
+	         <input type="button" id="add" value="Add" onclick="Javascript:addRow()"></td>
+
+	 </tr>
+	 
+
+	 
+  
+    </table>
+	</form>
+  <br><br>
+  <div id="mydata" style="display: none;">
+<b>List of Added Actuators </b>
+<table id="myTableData"  border="2" cellpadding="2">
+ <thead>
+    <tr>
+	<td> &nbsp; </td>
+        <td><b>   Actuator   </b></td>
+        <td><b>   Minimum Threshold   </b></td>
+        <td><b>   Maximum Threshold   </b></td>
+		 <td><b>  Command             </b></td>
+		 
+    </tr>
+	 </thead>
+	 <tbody>
+	 </tbody>
+	
+</table>
+&nbsp;<br/>
+</div>
+
+		<input class="btn btn-danger btn-lg" style="Height:50px;" id="addSensorBtn" name="commit" type="submit" value="Save Device" />
+
+
+
+<script type="text/javascript"  >
+
+  $(document).on('page:load ready', function() {
+  
+     $("#addNewChannel").click(function(){
+		    $('#channelsettings').show(); 
+			console.log("Button Clicked");
+
+    });
+	
+		$('#addSensorBtn').click(function(e){
+		
+		   var itemSelected = $("#deviceType option:selected").last();
+		var sensorType = itemSelected.val();
+		var sms,email ;
+		var isEmailChecked=$('#email').prop('checked');
+		var isSMSChecked=$('#sms').prop('checked');
+if(isEmailChecked){
+email=$('#email').val()
+}else{
+email="" ;
+}
+
+if(isSMSChecked){
+sms=$('#sms').val()
+}else{
+sms="";
+}
+
+
+     var itemSelected = $("#deviceslist option:selected").last();
+		var item = itemSelected.val();
+		var sensorID;
+		if(itemSelected.index() != 0){
+		
+		var sensorData=item.split("|");
+        sensorID=sensorData[0];
+        }else{
+          sensorID="No";
+        }
+console.log("Event sensor selected is "+sensorID);
+
+		//Submit Registered Actuators
+		
+		var TableData;
+TableData = storeTblValues()
+//TableData = $.toJSON(TableData);
+TableData=JSON.stringify(TableData);
+console.log("Actuators Data Are :: "+TableData);
+function storeTblValues()
+{
+    var TableData = new Array();
+
+    $('#mydata tr').each(function(row, tr){
+        TableData[row]={
+            "actuator" : $(tr).find('td:eq(1)').text()
+            , "minthreshold" :$(tr).find('td:eq(2)').text()
+            , "maxthreshold" : $(tr).find('td:eq(3)').text()
+            , "command" : $(tr).find('td:eq(4)').text()
+        }    
+    }); 
+    TableData.shift();  // first row will be empty - so remove
+    return TableData;
+}
+
+
+
+		console.log("SMS Value is "+$('#sms').val()+"Email"+$('#email').val() + " Sensor Type "+sensorType);
+                    e.preventDefault();
+                    console.log('select_link clicked');
+				    var data = {maxthreshold:$('#channel_maxThreshold').val(),minthreshold:$('#channel_minThreshold').val(),name:$('#channel_name').val(),description:$('#channel_description').val(),longitude:$('#channel_longitude').val(),latitude:$('#channel_latitude').val(),field1:$('#channel_field1').val(),mobile:$('#channel_mob').val(),sms:sms,email:email,sensortype:sensorType,eventSensor:sensorID,actuatorsList:TableData};
+					data.title = "title";
+					data.message = "message";
+					
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        contentType: 'application/json',
+                        url: '/channel',						
+                        success: function(data) {
+                            console.log('success');
+                            console.log(JSON.stringify(data));
+							//<input type="text" name="txtbx'+cnt+'" value="'+cnt+'">
+									    $('#channelsettings').hide(); 
+										var today = new Date();
+                                        var dd = today.getDate();
+                                        var mm = today.getMonth()+1; //January is 0!
+                                        var yyyy = today.getFullYear();
+                                        if(dd<10) {
+                                           dd='0'+dd
+                                        } 
+
+                                         if(mm<10) {
+                                          mm='0'+mm
+                                          }    
+
+                                        today = mm+'/'+dd+'/'+yyyy;
+										
+		
+				  var dataStr=JSON.stringify(data);
+				   var str1 = dataStr.replace(/"/g, '');
+				  console.log("Generated Id"+str1);
+				  
+				  
+
+
+  $('#sensorsTable tr:last').after('<tr><td> <h4 style="margin-top: 0;"> <a href="dashboard?sensorId='+str1+'"> <i class="fa fa-unlock fa-fw"></i> '+$('#channel_name').val()+'</a> </h4><h6 style="margin-top: 15px;">MQTT Topic ID :'+str1+'</h6></td><td>'+today+'</td></tr>');
+ 
+
+                        }
+                    });
+
+                });	
+				
+				    var data = {};
+					data.title = "title";
+					data.message = "message";
+					
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        contentType: 'application/json',
+                        url: '/getActuatorslist',						
+                        success: function(data) {
+                            console.log('success');
+							
+				  var dataStr=JSON.stringify(data);
+				   var str1 = dataStr.replace(/"/g, '');
+                                  	var today = new Date();
+                                        var dd = today.getDate();
+                                        var mm = today.getMonth()+1; //January is 0!
+                                        var yyyy = today.getFullYear();
+                                        if(dd<10) {
+                                           dd='0'+dd
+                                        } 
+
+                                         if(mm<10) {
+                                          mm='0'+mm
+                                          }    
+
+                                        today = mm+'/'+dd+'/'+yyyy;
+                      $.each(data, function(index, element) {
+					  console.log("Email "+ str1);
+					  $("#deviceslist").append("<option value="+element._id+"|"+element.longitude+"|"+element.latitude+"|"+element.minthreshold+"|"+element.maxthreshold+">"+element.description+"</option>");
+ // $('#sensorsTable tr:last').after('<tr><td> <h4 style="margin-top: 0;"> <a href="dashboard?sensorId='+element._id+'"> <i class="fa fa-unlock fa-fw"></i> //'+element.description+'</a> </h4> <h6 style="margin-top: 15px;">MQTT ID :'+element._id+'</h6></td><td>'+today+'</td></tr>');
+  
+         
+                         });				   
+				 
+ 
+
+                        }
+                    });
+
+
+					
+					
+						    var data = {};
+					data.title = "title";
+					data.message = "message";
+					
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        contentType: 'application/json',
+                        url: '/getsensorslist',						
+                        success: function(data) {
+                            console.log('success');
+							
+				  var dataStr=JSON.stringify(data);
+				   var str1 = dataStr.replace(/"/g, '');
+                                  	var today = new Date();
+                                        var dd = today.getDate();
+                                        var mm = today.getMonth()+1; //January is 0!
+                                        var yyyy = today.getFullYear();
+                                        if(dd<10) {
+                                           dd='0'+dd
+                                        } 
+
+                                         if(mm<10) {
+                                          mm='0'+mm
+                                          }    
+
+                                        today = mm+'/'+dd+'/'+yyyy;
+                      $.each(data, function(index, element) {
+					  console.log("Email "+ str1);
+  $('#sensorsTable tr:last').after('<tr><td> <h4 style="margin-top: 0;"> <a href="dashboard?sensorId='+element._id+'"> <i class="fa fa-unlock fa-fw"></i> '+element.description+'</a> </h4> <h6 style="margin-top: 15px;">MQTT ID :'+element._id+'</h6></td><td>'+today+'</td></tr>');
+  
+         
+                         });				   
+				 
+ 
+
+                        }
+                    });
+					
+					
+					
+					
+				
+				
+  });
+
+
+</script>
+
+
+  </div>
+
+
+  </div>
+
+</div>
+
+
+      </div>
+    </div>
+
+
+    <div id="footer">
+  <div class="container">
+    <p class="text-muted">
+
+      <span class="hidden-xs pull-left">
+        <a href="index" title="Open Source Internet of Things">SenseEgypt.com</a> |
+        <a href="index" title="SenseEgypt Documentation">Documentation</a> |
+        <a href="index" title="Tutorials on how to use SenseEgypt">Tutorials</a>
+      </span>
+    
+
+    </p>
+  </div>
+</div>
+
+
+
+
+
+  </body>
+</html>
+

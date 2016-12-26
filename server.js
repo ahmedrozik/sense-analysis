@@ -338,11 +338,10 @@ var https_options = {
 
 
 
-var server1 = https.createServer(https_options, app).listen(https_port, https_host,function() {
-  console.log('Express server listening on ' + server1.address().address + ':' + server1.address().port);
+
+var server = app.listen(app.get('port'), app.get('host'), function() {
+  console.log('Express server listening on ' + server.address().address + ':' + server.address().port);
 });
-
-
 
 
 module.exports = app;

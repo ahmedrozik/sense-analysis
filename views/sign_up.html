@@ -1,40 +1,117 @@
 <!DOCTYPE html>
 <html>
   
-<!-- Mirrored from thingspeak.com/users/sign_up by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 21 Oct 2014 22:59:07 GMT -->
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <head>
   <title>Registration - SenseEgypt</title>
   <meta content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
-  <meta name="description" content="Open source data platform and API for the Internet of Things.">
-  <meta name="keywords" content="iot, internet of things, iot platform, github, open source, internet of things platform, iobridge">
 
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  
+    <script src="js/jquery.validate.min.js"></script>
+
+<!--  <script src="js/SignUpForm-validation.js"></script> -->
+  <!--<script data-turbolinks-track="true" src="js/application-6fc220d7a77fd902426521898e0585b7.js"></script> -->
+
+  <script type='text/javascript' src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="css/bootstrap.min.css" />
   <link href="css/font-awesome.min.css" media="screen" rel="stylesheet" />
   <link data-turbolinks-track="true" href="css/application-34ab6c80c76e48d799f77e7e60386577.css" media="screen" rel="stylesheet" />
 
-  <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script type='text/javascript' src="js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="js/jquery-ui.min.js"></script>
-  <script data-turbolinks-track="true" src="js/application-6fc220d7a77fd902426521898e0585b7.js"></script>
+<style>
 
-  <meta content="authenticity_token" name="csrf-param" />
-<meta content="VktIW01tQf90v4pmDopsYwNVvu2xGcUhgqWBVTmY/+0=" name="csrf-token" />
-    <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-20107670-1']);
-  _gaq.push(['_trackPageview']);
+.my-error-class {
+    color:red;
+}
+.my-valid-class {
+    color:green;
+}
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #04498d;
+    color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #04498d;
+    color: white;
+}
+</style>
+
+
+
+
 
 
 
   
+	
+  
+  	
+
+
+
 </head>
 
 
@@ -64,7 +141,7 @@
       <ul class="nav navbar-nav navbar-right">
 
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a>
+        <!--  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a> -->
           <ul class="dropdown-menu">
             <li><a href="index">Documentation</a></li>
             <li><a href="index">Tutorials</a></li>
@@ -89,7 +166,7 @@
 
     <h4 class="breadcrumb">Sign up to start using SenseEgypt Portal</h4>
 
-    <form accept-charset="UTF-8" action="signup" class="form-horizontal" id="new_user" method="post">
+    <form accept-charset="UTF-8" action="sign_up" name="registration" class="form-horizontal" id="new_user" method="post">
 	<div style="margin:0;padding:0;display:inline">
 	<input name="utf8" type="hidden" value="&#x2713;" />
 	<input name="authenticity_token" type="hidden" value="VktIW01tQf90v4pmDopsYwNVvu2xGcUhgqWBVTmY/+0=" />
@@ -97,10 +174,12 @@
       
       <input name='userlogin' class='userlogin' />
 
-      <div class="form-group">
+     <div class="form-group" hidden>
         <label class="col-sm-4 col-xs-3 control-label">User ID</label>
         <div class="col-sm-8 col-xs-6"><input class="form-control" id="user_login" name="user[login]" type="text" /></div>
       </div>
+	  
+	  
 
       <div class="form-group">
         <label class="col-sm-4 col-xs-3 control-label">Email</label>
@@ -120,7 +199,8 @@
         <label class="col-sm-4 col-xs-3 control-label">Time Zone</label>
         <div class="col-sm-8 col-xs-8">
           <p class="form-control-static">
-            <select class="form-control" id="user_time_zone" name="user[time_zone]"><option value="American Samoa">(GMT-11:00) American Samoa</option>
+            <select class="form-control" id="user_time_zone" name="user[time_zone]">
+			<option value="American Samoa">(GMT-11:00) American Samoa</option>
 <option value="International Date Line West">(GMT-11:00) International Date Line West</option>
 <option value="Midway Island">(GMT-11:00) Midway Island</option>
 <option value="Hawaii">(GMT-10:00) Hawaii</option>
@@ -138,7 +218,7 @@
 <option value="Monterrey">(GMT-06:00) Monterrey</option>
 <option value="Saskatchewan">(GMT-06:00) Saskatchewan</option>
 <option value="Bogota">(GMT-05:00) Bogota</option>
-<option selected="selected" value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>
+<option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>
 <option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>
 <option value="Lima">(GMT-05:00) Lima</option>
 <option value="Quito">(GMT-05:00) Quito</option>
@@ -184,7 +264,7 @@
 <option value="Zagreb">(GMT+01:00) Zagreb</option>
 <option value="Athens">(GMT+02:00) Athens</option>
 <option value="Bucharest">(GMT+02:00) Bucharest</option>
-<option value="Cairo">(GMT+02:00) Cairo</option>
+<option selected="selected" value="Cairo">(GMT+02:00) Cairo</option>
 <option value="Harare">(GMT+02:00) Harare</option>
 <option value="Helsinki">(GMT+02:00) Helsinki</option>
 <option value="Istanbul">(GMT+02:00) Istanbul</option>
@@ -276,7 +356,12 @@
         <div class="col-sm-8 col-xs-6"><input class="form-control" id="pass" name="pass" type="password" /></div>
       </div>
 
-      <div class="form-group">
+	   <div class="form-group" >
+        <label class="col-sm-4 col-xs-3 control-label">Password Confirmation</label>
+        <div class="col-sm-8 col-xs-6"><input class="form-control" id="password_confirmation" name="password_confirmation" type="password" /></div>
+      </div>
+	  
+      <div class="form-group" hidden>
         <label class="col-sm-4 col-xs-3 control-label">Password Confirmation</label>
         <div class="col-sm-8 col-xs-6"><input class="form-control" id="user_password_confirmation" name="user[password_confirmation]" type="password" /></div>
       </div>
@@ -289,15 +374,169 @@
 </form>  </div>
 </div>
 
-<script type="text/javascript">
-  document.getElementById('user_login').focus();
-</script>
-
 
       </div>
     </div>
+	
+<script type="text/javascript">
 
-    <div id="footer">
+  $(document).on('page:load ready', function() {
+  
+  
+  ///Display Popup Window
+  
+  
+  // Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+
+  
+  //   $("#user_submit").click(function(){
+    
+			console.log("Create User Button Clicked");
+
+			  $("form[name='registration']").validate({
+	    errorClass: "my-error-class",
+    validClass: "my-valid-class",
+	
+    // Specify validation rules
+    rules: {
+      // The key name on the left side is the name attribute
+      // of an input field. Validation rules are defined
+      // on the right side
+     
+      email: {
+        required: true,
+        // Specify that email should be validated
+        // by the built-in "email" rule
+        email: true
+      },
+	  mobile: "required" ,
+
+      pass: {
+        required: true,
+        minlength: 5
+      },
+	    password_confirmation: {
+      equalTo: "#pass"
+    }
+	
+    },
+    // Specify validation error messages
+    messages: {
+      pass: {
+        required: "Please provide a password",
+        minlength: "Your password must be at least 5 characters long"
+      },
+      email: "Please enter a valid email address"
+    },
+    // Make sure the form is submitted to the destination defined
+    // in the "action" attribute of the form when valid
+    submitHandler: function(form) {
+		
+		    //  form.submit();
+			  	    var data = {email:$('#email').val(),pass:$('#pass').val(),mobile:$('#mobile').val()};
+					data.title = "title";
+					data.message = "message";
+					
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        contentType: 'application/json',
+                        url: '/sign_up',						
+                        success: function(data) {
+                            console.log('success');
+                            console.log(JSON.stringify(data));
+					
+		
+				  var dataStr=JSON.stringify(data);
+				   var str1 = dataStr.replace(/"/g, '');
+		//		  console.log("Generated Id"+str1);
+				  
+				  
+				  
+				       
+					  
+					  if(str1 == "User has been created successfully" || dataStr == "User has been created successfully"){
+					  
+					  $('#new_user').find('input:text, input:password, select, textarea').val('');
+                  //    $('#new_user').find('input:radio, input:checkbox').prop('checked', false);
+					     document.getElementById("user_msg").innerHTML = "User has been created successfully and you can sign in now <a href='login'>Sign In</a>";
+
+						 modal.style.display = "block";
+
+					  }else{
+					  console.log("User Not Created");
+										  document.getElementById("user_msg").innerHTML = "User is already Existing!";
+
+					  					      modal.style.display = "block";
+
+					  }
+				  
+	
+
+                        }
+                    });
+
+			  
+			  
+
+    }
+ // });
+  
+
+    });
+
+	
+	});
+</script>
+
+	
+	
+
+
+<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>SenseEgypt</h2>
+    </div>
+    <div class="modal-body">
+     
+     <h1><p id="user_msg" style="color:red" > <font  face="Times New Roman" size="5">Hello </font></p><h1>
+					
+    </div>
+    <div class="modal-footer">
+      <h3>SenseEgypt </h3>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+  <div id="footer">
   <div class="container">
     <p class="text-muted">
 
@@ -313,6 +552,7 @@
     </p>
   </div>
 </div>
+
 
 
 

@@ -78,17 +78,103 @@ width: 850px;
 	  
  #export-canvas{
 	position: fixed;
-	right: 100px;
+	right: 40px;
     top: 85px;
 	display: inline-block;
 	font-family: Arial, Helvetica, sans-serif;
 }
-	  
-	  
+	
+ #entropy-canvas{
+	position: fixed;
+	right: 40px;
+    top: 150px;
+	display: inline-block;
+	font-family: Arial, Helvetica, sans-serif;
+}
+	
+	 
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #04498d;
+    color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #04498d;
+    color: white;
+}	 
 	  
     </style>
 	
-	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP58BUbmgnbS_8r_U8v6UwdK0sCNCuv7M&callback=initMap"></script>
+	
+	
+
+
+
+
+	
+	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP58BUbmgnbS_8r_U8v6UwdK0sCNCuv7M" async defer></script>
     <script>
       function initialize(lon,lat) {
 	  	  console.log(" From Initialize");
@@ -181,7 +267,7 @@ width: 850px;
       </div>
     </div>
   </section>
-  <h1 class="iottext">Sensors</h1>
+  <h1 class="iottext">Select Chart Color</h1>
   <section>
     <div id="legend"></div>
   </section>
@@ -232,12 +318,37 @@ width: 850px;
 </form>
 <script>
 var sensorID;
+  var items = [];
 console.log("UI Controller Call ---- ");
 var myVar = <%- JSON.stringify(channelName) %>;
   console.log("Channel Name is : "+myVar);
   
     $(document).on('page:load ready', function() {
  
+ 
+ 
+ var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+
 
                     console.log('select_link clicked');
 				    var data = {};
@@ -346,6 +457,64 @@ xhr.send(JSON.stringify(data));
 			
 					}
   });
+  
+  
+  
+  
+
+
+
+
+  $('#calcEntropy').click(function(e){
+            console.log(' Entropy Button CLicked ');
+
+               			                               console.log(' Entropy Call Request Items '+JSON.stringify(items));
+
+  if(items.length >= 20 ){
+  		   	       var data = {sensorID:sensorID,items:items};
+             			                               console.log(' Entropy Call Request Items '+JSON.stringify(data));
+
+					data.title = "title";
+					data.message = "message";
+					
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        contentType: 'application/json',
+                        url: '/getEntroby',						
+                        success: function(data) {
+							
+				           var dataStr=JSON.stringify(data);
+				           var str1 = dataStr.replace(/"/g, '');
+
+             			                               console.log(' Entropy Call success Response   '+str1);
+													   
+													   
+		
+					     console.log("User Not Created");
+										  document.getElementById("user_msg").innerHTML = str1;
+
+					  					      modal.style.display = "block";
+
+					  
+					  
+					  
+
+				 
+ 
+
+                        }
+                    });
+					
+				items = [];	
+  
+}
+  });
+
+
+
+  
+  
    });
   
 </script>
@@ -361,8 +530,15 @@ xhr.send(JSON.stringify(data));
 
 	
 	<div id="export-canvas">
-	  <input class="btn btn-danger btn-lg"  type="submit"  id="exportData" value=" Export Data" />
+	  <input class="btn btn-danger btn-lg"  type="submit"  id="exportData" value="  Export  Data" />
 	</div>
+	
+	
+	<div id="entropy-canvas">
+	  <input class="btn btn-danger btn-lg"  type="submit"  id="calcEntropy" value="Check Abnormality" />
+	</div>
+	
+	
 
 <script type="text/javascript" src="js/realtime/mqttws31.js">
 
@@ -374,6 +550,26 @@ xhr.send(JSON.stringify(data));
 <script type="text/javascript" src="js/uicontroller.js"></script>
 
 
+	<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2> DTW Results</h2>
+    </div>
+    <div class="modal-body">
+     
+     <h1><p id="user_msg" style="color:red" > <font  face="Times New Roman" size="5">Hello </font></p><h1>
+					
+    </div>
+    <div class="modal-footer">
+      <h3>SenseEgypt </h3>
+    </div>
+  </div>
+
+</div>
+
+	
     <div id="footer">
   <div class="container">
     <p class="text-muted">

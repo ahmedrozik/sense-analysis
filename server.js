@@ -18,6 +18,7 @@ var mqtt = require('mqtt')
 var fs = require('fs');
 var https = require('https')
 
+var DTW = require('dtw');
 
 
 
@@ -29,10 +30,17 @@ var crypto = require('crypto');
 var shortid = require('shortid');
 var nodemailer = require('nodemailer');
 
+/*
+var s = [50,51,52,53,54,55,56,57,58,59];
+var t = [50,51,52,63,64,65,66,57,58,59];
+var dtw = new DTW();
+var cost = dtw.compute(s, t ,10 );
+var path = dtw.path();
+console.log('Cost: ' + cost);
+console.log('Path: ');
+console.log(path);
 
-
-
-
+*/
 
 var index = require('./routes/index');
 
@@ -185,9 +193,9 @@ var transporter = nodemailer.createTransport({
 var mailOptions = {
     from: 'EGY-Talk <jdev.cs2011@gmail.com>', // sender address
     to: email, // list of receivers
-    subject: 'Sensor Alert', // Subject line
-    text: 'Sensor Alert', // plaintext body
-    html: '<b>Sensor Alert from EGY-Talk </b>' // html body
+    subject: 'SenseEgypt Sensor Alert', // Subject line
+    text: 'SenseEgypt Sensor Alert', // plaintext body
+    html: '<b>Sensor Alert from SenseEgypt Platform Regarding your sensor Alerts </b>' // html body
 };
 
 // send mail with defined transport object

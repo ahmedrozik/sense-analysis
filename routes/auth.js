@@ -18,10 +18,15 @@ var http = require('http');
 var nodemailer = require('nodemailer');
  var nodeExcel=require('excel-export');
 
+ var entropy = require('shannon-entropy');
+var DTW = require('dtw');
+
+ 
 console.log("Auth test");
 
 
 var client = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
+var client2 = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
 
 
 router.get('/channel', function(req, res) {
@@ -122,9 +127,9 @@ var transporter = nodemailer.createTransport({
 var mailOptions = {
     from: 'EGY-Talk <jdev.cs2011@gmail.com>', // sender address
     to: email, // list of receivers
-    subject: 'Sensor Alert', // Subject line
-    text: 'Sensor Alert', // plaintext body
-    html: '<b>Sensor Alert from EGY-Talk </b>' // html body
+    subject: 'Sense Egypt Sensor Alert', // Subject line
+    text: 'SenseEgypt Sensor Alert', // plaintext body
+    html: '<b>Sensor Alert from SenseEgypt Platform Regarding your sensor Alerts </b>' // html body
 };
 
 // send mail with defined transport object
@@ -312,6 +317,55 @@ console.log('Get Registered Sesnros for This user'+email);
   
   		  
 });
+
+
+//Get Entroby
+router.post('/getEntroby', function(req, res) {
+    var sensorID=req.param('sensorID');
+	var items=req.param('items');
+	console.log('Entropy Sensor ID is '+items);
+  
+
+	  var s=[];
+      var t=[];
+var array_values = new Array();
+
+        for (var key in items) {
+           array_values.push(items[key].value);
+	        console.log('Items Map  ELmenet Value is :::  '+items[key].value);
+        }
+	console.log('Items Map is :::  '+array_values.length);
+    var j=0;
+    for(var i=0;i<array_values.length;i++){
+	if(i < array_values.length/2){
+	    s[i]=array_values[i];
+         }else{
+		   t[j]=array_values[i];
+           j++;
+       }
+	
+    }
+
+
+
+
+var dtw = new DTW();
+var cost = dtw.compute(s, t ,10 );
+var path = dtw.path();
+
+console.log('Cost: ' + cost);
+console.log('Path: ');
+console.log(path);
+ 
+if(cost != 0){
+ return res.send("There is an abnormal event has been detected");
+ }else{
+ return res.send("There is no abnormal event has been detected");
+
+}
+ 		  
+});
+
 
 // Export Sensor Data
 

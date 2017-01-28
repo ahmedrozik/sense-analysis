@@ -43,11 +43,13 @@ console.log("User Logged "+isLogged);
 
 islogged=JSON.stringify(isLogged);
 
-if(isLogged == true){
+if(isLogged == true || isLogged == 'true' ){
 
   $('#channelsList').show(); 
   console.log("User Logged  SHow Channels "+isLogged);
-  					    $('#SIGNINUP').hide(); 
+  					    $('#SIGNUP').hide(); 
+						  					    $('#SIGNIN').hide(); 
+
 						  $('#SIGNOUT').show(); 
 
 						
@@ -59,8 +61,9 @@ if(isLogged == true){
 			  console.log("User Logged  Hide Channels "+isLogged);
 		    $('#SIGNOUT').hide(); 
 
-					    $('#SIGNINUP').show(); 
-
+   $('#SIGNUP').show(); 
+						  					    $('#SIGNIN').show(); 
+												
 }
 
 
@@ -126,12 +129,17 @@ if(isLogged == true){
             <li><a href="index">Tutorials</a></li>
           </ul>
         </li>
-<div id="SIGNINUP" class="nav navbar-nav navbar-right">
+<div id="SIGNIN" class="nav navbar-nav navbar-right">
 
           <li> <a href="login">Sign In</a></li>
 
+</div>
+<div id="SIGNUP" class="nav navbar-nav navbar-right">
+
+
           <li><a href="sign_up">Sign Up</a></li>
 </div>
+
 <div id="SIGNOUT" class="nav navbar-nav navbar-right">
 
           <li><a href="/logout">Sign Out</a></li>
@@ -148,8 +156,8 @@ if(isLogged == true){
   <div id="home-top-center">
     <div id="home-motto">
 	 
-      <h1>          SenseEgypt Billions and Billions of Sensors</h1>
-      <h2>                   Egypt First IOT Portal</h2>
+      <h2 style="color:red;">            SenseEgypt IoT Platform </h2>
+
     </div>
 
     <br><br>
@@ -275,6 +283,17 @@ if(isLogged == true){
 
 
   <br>
+
+  
+  
+   <br><br>
+  
+    <div class="row">
+
+	
+     </div>
+
+
 
 </div>
 

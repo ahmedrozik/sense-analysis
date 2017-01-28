@@ -10,10 +10,10 @@ var schema = mongoose.Schema({
   , description: { type: String, required: true}
   , longitude: { type: String, required: true}
   , latitude: {type: String, required: true }
-  , field: { type: String, required: true}
+  , field: { type: String, required: false}
   , minthreshold: { type: String, required: false}
   , maxthreshold: { type: String, required: false}
-  , mobile: { type: String, required: true}
+  , mobile: { type: String, required: false}
   , sms: { type: String, required: false}
   , emailEvent: { type: String, required: false}
   , type: { type: String, required: true}

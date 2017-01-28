@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <html>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <head>
@@ -13,21 +15,27 @@
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type='text/javascript' src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+  
+    <script src="js/jquery.validate.min.js"></script>
+<script src="js/LoginForm-validation.js"></script>
+
   <script data-turbolinks-track="true" src="js/application-6fc220d7a77fd902426521898e0585b7.js"></script>
 
   <meta content="authenticity_token" name="csrf-param" />
 <meta content="VktIW01tQf90v4pmDopsYwNVvu2xGcUhgqWBVTmY/+0=" name="csrf-token" />
-    <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-20107670-1']);
-  _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
+
+
+<style>
+.my-error-class {
+    color:red;
+}
+.my-valid-class {
+    color:Green;
+}
+
+</style>
+
 
 
 
@@ -61,7 +69,7 @@
       <ul class="nav navbar-nav navbar-right">
 
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a>
+      <!--    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a>  -->
           <ul class="dropdown-menu">
             <li><a href="index">Documentation</a></li>
             <li><a href="index">Tutorials</a></li>
@@ -93,7 +101,8 @@
     
     
 
-    <form accept-charset="UTF-8" action="login" class="form-horizontal" id="loginform" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="VktIW01tQf90v4pmDopsYwNVvu2xGcUhgqWBVTmY/+0=" /></div>
+    <form accept-charset="UTF-8" action="login" class="form-horizontal" id="loginform" name="login" method="post">
+	<div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="VktIW01tQf90v4pmDopsYwNVvu2xGcUhgqWBVTmY/+0=" /></div>
       <input name='userlogin' class='userlogin' />
 <!--user[login]   user[password]-->
       <div class="form-group">
@@ -105,7 +114,7 @@
         <label class="col-sm-4 col-xs-3 control-label">Password</label>
         <div class="col-sm-8 col-xs-9">
           <input class="form-control" id="user_password" name="pass" type="password" />
-          <a href="users/password/new.html" id="forgot_password">Forgot your password?</a>
+          <a href="/" id="forgot_password">Forgot your password?</a>
         </div>
       </div>
 
@@ -133,6 +142,12 @@
     login.focus();
   else
     document.getElementById('user_password').focus();
+	
+	
+
+
+
+
 </script>
 
 

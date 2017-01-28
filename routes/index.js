@@ -18,7 +18,7 @@ var crypto = require('crypto');
 router.get('/', function(req, res) {
 	console.log("Auth.js ////// index Page");
 	 
-	   if(req.session.isLoggedIn == "true"){
+	   if(req.session.isLoggedIn == "true" || req.session.isLoggedIn == true ){
 	   res.render('index',{ title: 'SenseEgypt' ,logged:'true'});
 
  }else{
@@ -34,7 +34,7 @@ router.get('/', function(req, res) {
 
 
 
-router.post('/signup', function(req, res) {
+router.post('/sign_up', function(req, res) {
 	console.log("Sign_up Post");
 	console.log(" Mongoose Module is "+mongoose);
 	
@@ -49,15 +49,15 @@ router.post('/signup', function(req, res) {
     }
 
     User.findById(email, function (err, user) {
-      if (err) return next(err);
+      if (err) return invalid();
 
       if (user) {
 		  console.log("User Already Existing");
-        return res.render('sign_up', { exists: true });
+	return res.send("User Already Existing , Please Enter New Email");
       }
 
       crypto.randomBytes(16, function (err, bytes) {
-        if (err) return next(err);
+        if (err) return invalid();
 
         var user = { _id: email , mobile: mobile };
         user.salt = bytes.toString('utf8');
@@ -68,14 +68,16 @@ router.post('/signup', function(req, res) {
             if (err instanceof mongoose.Error.ValidationError) {
               return invalid();
             } 
-            return next(err);
+            return invalid();
           }
 
           // user created successfully
-          req.session.isLoggedIn = true;
-          req.session.user = email;
-          console.log('created user: %s', email);
-          return res.redirect('/login');
+       //   req.session.isLoggedIn = true;
+        //  req.session.user = email;
+          console.log('user has been created successfully : %s', email);
+	// res.render('sign_up',{ title: 'SenseEgypt' , created:'true'});
+	return res.send("User has been created successfully");
+
         })
       })
     })
@@ -84,8 +86,8 @@ router.post('/signup', function(req, res) {
       return res.render('sign_up', { invalid: true });
     }
 	
-	
-  //res.redirect("/login");
+
+
 });
 
 //manage login routes

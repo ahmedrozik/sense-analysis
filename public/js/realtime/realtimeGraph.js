@@ -101,7 +101,7 @@ var RealtimeGraph = function(){
 		var key = 0;
 		var seriesData = [];
 		var timestamp = Date.now()/1000;
-		var maxPoints = 25; 
+		var maxPoints = 5; 
 		for (var j in data.d)
 		{
 			if (typeof data.d[j] !== 'string') {

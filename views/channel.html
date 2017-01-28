@@ -13,6 +13,9 @@
 
   
  <script type="text/javascript" src="js/jquery.min.js"></script>
+     <script src="js/jquery.validate.min.js"></script>
+<script src="js/ChannelForm-validation.js"></script>
+
   <script type='text/javascript' src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/jquery-ui.min.js"></script>
   <script data-turbolinks-track="true" src="js/application-2fa1f01b48ec9e72eaa3ad5c1f134298.js"></script>
@@ -37,6 +40,7 @@
   //Add table for Actuators Rules 
   
   function addRow() {
+
       $('#mydata').show();
 
   
@@ -79,6 +83,7 @@
 
 }
 
+
 function deleteRow(obj) {
      
     var index = obj.parentNode.parentNode.rowIndex;
@@ -111,6 +116,7 @@ function addTable() {
     myTableDiv.appendChild(table);
    
 }
+
 
 function load() {
    
@@ -150,6 +156,16 @@ th {
 </style>
 
 
+
+<style>
+.my-error-class {
+    color:red;
+}
+.my-valid-class {
+    color:green;
+}
+
+</style>
 
 
 
@@ -288,7 +304,7 @@ th {
 
 
    
-	 <form accept-charset="UTF-8" id="addSensorForm"  method="post">
+	 <form accept-charset="UTF-8" id="addSensorForm" name="addchannel"  method="post">
     <table class="table_no_header">
 	
 	<tr>
@@ -367,7 +383,7 @@ th {
       </tr>
 	 <tr>
 	 <td>
-	         <input type="button" id="add" value="Add" onclick="Javascript:addRow()"></td>
+	         <input type="button" id="add" value="Add" type="submit" onclick="Javascript:addRow()"></td>
 
 	 </tr>
 	 
@@ -375,7 +391,7 @@ th {
 	 
   
     </table>
-	</form>
+<!--	</form>  -->
   <br><br>
   <div id="mydata" style="display: none;">
 <b>List of Added Actuators </b>
@@ -400,120 +416,23 @@ th {
 		<input class="btn btn-danger btn-lg" style="Height:50px;" id="addSensorBtn" name="commit" type="submit" value="Save Device" />
 
 
-
+</form>
 <script type="text/javascript"  >
 
   $(document).on('page:load ready', function() {
   
      $("#addNewChannel").click(function(){
-		    $('#channelsettings').show(); 
+        $('#addSensorForm').find('input:text, input:password, select, textarea').val('');
+        $('#addSensorForm').find('input:radio, input:checkbox').prop('checked', false);
+
+				    $('#channelsettings').show(); 
+
+
 			console.log("Button Clicked");
 
     });
 	
-		$('#addSensorBtn').click(function(e){
-		
-		   var itemSelected = $("#deviceType option:selected").last();
-		var sensorType = itemSelected.val();
-		var sms,email ;
-		var isEmailChecked=$('#email').prop('checked');
-		var isSMSChecked=$('#sms').prop('checked');
-if(isEmailChecked){
-email=$('#email').val()
-}else{
-email="" ;
-}
-
-if(isSMSChecked){
-sms=$('#sms').val()
-}else{
-sms="";
-}
-
-
-     var itemSelected = $("#deviceslist option:selected").last();
-		var item = itemSelected.val();
-		var sensorID;
-		if(itemSelected.index() != 0){
-		
-		var sensorData=item.split("|");
-        sensorID=sensorData[0];
-        }else{
-          sensorID="No";
-        }
-console.log("Event sensor selected is "+sensorID);
-
-		//Submit Registered Actuators
-		
-		var TableData;
-TableData = storeTblValues()
-//TableData = $.toJSON(TableData);
-TableData=JSON.stringify(TableData);
-console.log("Actuators Data Are :: "+TableData);
-function storeTblValues()
-{
-    var TableData = new Array();
-
-    $('#mydata tr').each(function(row, tr){
-        TableData[row]={
-            "actuator" : $(tr).find('td:eq(1)').text()
-            , "minthreshold" :$(tr).find('td:eq(2)').text()
-            , "maxthreshold" : $(tr).find('td:eq(3)').text()
-            , "command" : $(tr).find('td:eq(4)').text()
-        }    
-    }); 
-    TableData.shift();  // first row will be empty - so remove
-    return TableData;
-}
-
-
-
-		console.log("SMS Value is "+$('#sms').val()+"Email"+$('#email').val() + " Sensor Type "+sensorType);
-                    e.preventDefault();
-                    console.log('select_link clicked');
-				    var data = {maxthreshold:$('#channel_maxThreshold').val(),minthreshold:$('#channel_minThreshold').val(),name:$('#channel_name').val(),description:$('#channel_description').val(),longitude:$('#channel_longitude').val(),latitude:$('#channel_latitude').val(),field1:$('#channel_field1').val(),mobile:$('#channel_mob').val(),sms:sms,email:email,sensortype:sensorType,eventSensor:sensorID,actuatorsList:TableData};
-					data.title = "title";
-					data.message = "message";
-					
-					$.ajax({
-						type: 'POST',
-						data: JSON.stringify(data),
-				        contentType: 'application/json',
-                        url: '/channel',						
-                        success: function(data) {
-                            console.log('success');
-                            console.log(JSON.stringify(data));
-							//<input type="text" name="txtbx'+cnt+'" value="'+cnt+'">
-									    $('#channelsettings').hide(); 
-										var today = new Date();
-                                        var dd = today.getDate();
-                                        var mm = today.getMonth()+1; //January is 0!
-                                        var yyyy = today.getFullYear();
-                                        if(dd<10) {
-                                           dd='0'+dd
-                                        } 
-
-                                         if(mm<10) {
-                                          mm='0'+mm
-                                          }    
-
-                                        today = mm+'/'+dd+'/'+yyyy;
-										
-		
-				  var dataStr=JSON.stringify(data);
-				   var str1 = dataStr.replace(/"/g, '');
-				  console.log("Generated Id"+str1);
-				  
-				  
-
-
-  $('#sensorsTable tr:last').after('<tr><td> <h4 style="margin-top: 0;"> <a href="dashboard?sensorId='+str1+'"> <i class="fa fa-unlock fa-fw"></i> '+$('#channel_name').val()+'</a> </h4><h6 style="margin-top: 15px;">MQTT Topic ID :'+str1+'</h6></td><td>'+today+'</td></tr>');
- 
-
-                        }
-                    });
-
-                });	
+	
 				
 				    var data = {};
 					data.title = "title";
@@ -619,21 +538,23 @@ function storeTblValues()
       </div>
     </div>
 
-
-    <div id="footer">
+	<div id="footer">
   <div class="container">
     <p class="text-muted">
 
       <span class="hidden-xs pull-left">
-        <a href="index" title="Open Source Internet of Things">SenseEgypt.com</a> |
-        <a href="index" title="SenseEgypt Documentation">Documentation</a> |
-        <a href="index" title="Tutorials on how to use SenseEgypt">Tutorials</a>
+        <a href="index.html" title="Open Source Internet of Things">SenseEgypt.com</a> |
+        <a href="docs.html" title="SenseEgypt Documentation">Documentation</a> |
+        <a href="docs/tutorials/index.html" title="Tutorials on how to use SenseEgypt Platform">Tutorials</a>
       </span>
     
 
     </p>
   </div>
 </div>
+
+
+
 
 
 

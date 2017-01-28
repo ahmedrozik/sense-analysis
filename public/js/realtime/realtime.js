@@ -5,28 +5,37 @@ var Realtime = function() {
 
 	var firstMessage = true;
 
-	//var clientId="a:"+orgId+":" +Date.now();
 	var clientId="a:"+"EGYIOT"+":" +Date.now();
 
-	console.log("clientId: " + clientId);
-	//var hostname = orgId+".messaging.internetofthings.ibmcloud.com";
 	var hostname="broker.mqtt-dashboard.com";
-		//var hostname="localhost";
 
 	var client;
-
+    var rtGraph;
 	this.initialize = function(){
-console.log("Initialize realtime chart");
 		client = new Messaging.Client(hostname, 8000,clientId);
 
 		// Initialize the Realtime Graph
-		var rtGraph = new RealtimeGraph();
+		rtGraph = new RealtimeGraph();
 		client.onMessageArrived = function(msg) {
 			console.log("Hit Real time data 12");
 
 			var topic = msg.destinationName;
+			//payloadMessage
+			var payload2 = JSON.parse(msg.payloadString);
+		    var payload=parseFloat(payload2)
 			
-			var payload = JSON.parse(msg.payloadString);
+			 console.log("Message REceived  "+payload);
+			 
+			 if(items.length <20){
+			      items.push({sensor: topic, value: payload});
+				}
+			/*	if(items.length > 110){
+					
+					items=[];
+					
+				}
+				*/
+				
 			 var minThreshold,maxThreshold;
 			 console.log("Min Threshold "+window.minThreshold + " Max Threshold "+window.maxThreshold);
 			 if(parseFloat(payload) < parseFloat(window.minThreshold) ||parseFloat(payload) > parseFloat(window.maxThreshold)) {
@@ -52,13 +61,17 @@ console.log("Initialize realtime chart");
 			console.log("Message Arrived "+msg.payloadString);
 			//First message, instantiate the graph  
 		    if (firstMessage) {
+			console.log("Display chart for first time")
+
 		    	$('#chart').empty();
 		    	firstMessage=false;
 		    	rtGraph.displayChart(null,payload);
-				console.log("Display chart for first time")
 		    } else {
+				console.log("Display chart for second time")
+
 		    	rtGraph.graphData(payload);
-								console.log("Display chart for second time")
+
+
 
 		    }
 		};
@@ -84,8 +97,11 @@ console.log("Initialize realtime chart");
 
 		console.log("about to connect to " + client.host);
 		client.connect(connectOptions);
+		
 	}
 
+	
+	
 	// Subscribe to the device when the device ID is selected.
 	this.plotRealtimeGraph = function(){
 		console.log("plot realtime chart");
@@ -118,23 +134,30 @@ console.log("Initialize realtime chart");
 		
 		var tokens = item.split(':');
 		if(subscribeTopic != "") {
-											console.log("subscribed  before error 555 ");
 
 			console.log("Unsubscribing to " + subscribeTopic);
 			client.unsubscribe(subscribeTopic);
 		}
 
 		//clear prev graphs
-		$('#chart').hide(function(){ 
+		/*
+$('#chart').hide(function(){ 
 										console.log("subscribed  before error 666 ");
 
 			$('#chart').empty(); 
 			$('#chart').show();
 			$('#chart').append(imageHTML);
 		});
+		*/
 		
+	        $('#chart').empty(); 
+			$('#chart').hide();
+			$('#chart').show();
+			$('#chart').append(imageHTML);
+
 		$('#timeline').empty();
 		$('#legend').empty();
+		
 		firstMessage = true;
 
 		//subscribeTopic = "iot-2/type/" + tokens[2] + "/id/" + tokens[3] + "/evt/+/fmt/json";

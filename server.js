@@ -43,8 +43,9 @@ var index = require('./routes/index');
 
 var app = express();
 
-var http_host = (process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
-var http_port = (process.env.OPENSHIFT_NODEJS_PORT || 8080);
+var http_host = (process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
+var http_port = (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
+
 app.set('sensorCounter',2);
 app.set('port', http_port);
 app.set('host',http_host);

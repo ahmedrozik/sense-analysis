@@ -11,10 +11,7 @@ require('express-mongoose');
 var models = require('./models');
 var Sensor = mongoose.model('Sensor');
 var SensorDataMod = mongoose.model('SensorData');
-
 var mqtt = require('mqtt')
-
-
 var fs = require('fs');
 var https = require('https')
 

@@ -12,7 +12,7 @@ var Realtime = function() {
 	var client;
     var rtGraph;
 	this.initialize = function(){
-		client = new Messaging.Client(hostname, 8000,clientId);
+		client = new Messaging.Client(hostname, 8883,clientId);
 
 		// Initialize the Realtime Graph
 		rtGraph = new RealtimeGraph();

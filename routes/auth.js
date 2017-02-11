@@ -21,7 +21,7 @@ var nodemailer = require('nodemailer');
  var entropy = require('shannon-entropy');
 var DTW = require('dtw');
 
- 
+ var fs = require('fs');
 console.log("Auth test");
 
 
@@ -31,12 +31,29 @@ var client2 = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
 
 router.get('/channel', function(req, res) {
 	console.log("Channel Page");
-	res.render('channel', { title: ' EGY IOT' });
+	res.render('channel', {  ispublic: 'false' , logged:'true' });
 
 
 
 
 });
+
+
+
+router.get('/publicchannel', function(req, res) {
+	console.log("Public Channel Page");
+	 if(req.session != null && req.session.isLoggedIn == "true" || req.session.isLoggedIn == true){
+	   res.render('channel',{  ispublic: 'true' ,logged:'true'});
+
+ }else{
+ 
+ 
+  res.render('channel',{  ispublic: 'true' ,logged:'false'});
+ }
+
+
+});
+
 
 client.on('message', function (topic, message) {
   console.log("Topic name is receive from AUTH &&&  "+ topic + " Message content is  "+message);
@@ -265,6 +282,7 @@ for(var i=0;i<actuatorList.length;i++){
 		    sensor.emailEvent=cleanString(req.param('email'));
 		    sensor.type=cleanString(req.param('sensortype'));
 		    sensor.eventSensor=cleanString(req.param('eventSensor'));
+		    sensor.ispublic=cleanString(req.param('ispublic'));
 
 
 
@@ -302,10 +320,23 @@ console.log(" name" +sensor.name +"  desc "+sensor.description +"  longit"+senso
 
 router.post('/getsensorslist', function(req, res) {
 	var email=req.session.user;	
+	var ispublic=req.param('ispublic');
 
 console.log('Get Registered Sesnros for This user'+email);
+if(ispublic == 'true'){
+		Sensor.find({  
+    'ispublic':ispublic
+  }, function(err, sensors) {
+    if (err) {
+    } else {
+      console.log(sensors);
+	             return res.send(sensors);
+
+    }
+  });
+}else{
 	Sensor.find({  
-    'email': email
+    'email': email,'ispublic':'false'
   }, function(err, sensors) {
     if (err) {
     } else {
@@ -315,8 +346,107 @@ console.log('Get Registered Sesnros for This user'+email);
     }
   });
   
-  		  
+}
+  
 });
+
+
+// Get Historic Data
+
+router.post('/gethistoricdata', function(req, res) {
+	var startDate=req.param('start');
+	var endDate=req.param('end');
+	var sensorName=req.param('sensorID');
+	var isdate=req.param('isdate');
+	var top=req.param('top');
+
+
+console.log('Sensor Name '+sensorName  + ' start date '+startDate + '  end date '+endDate );
+
+if(isdate == 'true'){
+		SensorDataMod.find({'name': sensorName,"created": {"$gte": new Date(startDate), "$lt": new Date(endDate)}}, function(err, sensors) {
+				console.log(' From Find Data ');
+				
+    if (err) {
+		
+		console.log(' Error in get devices Data ');
+    } else {
+			console.log(' Data returned  from Date Query ');
+	            arr=[];
+            for(i=0;i<sensors.length;i++){
+                name=sensors[i].name;
+				 value=sensors[i].value;
+				 created=sensors[i].created;
+				 console.log(' *****  Data returned ' + name + ' Value '+value + ' created '+created);							
+              				    arr.push({evt: parseFloat(value), timestamp: created});
+
+                }
+				
+res.contentType('application/json');
+return res.send(JSON.stringify(arr));
+					console.log(' Data returned  results'+arr);
+
+	
+	
+        
+
+
+    }
+  });
+	
+}else{
+	
+		SensorDataMod.find({'name': sensorName}, function(err, sensors) {
+				console.log(' From Find Data ');
+				
+    if (err) {
+		
+		console.log(' Error in get devices Data  ');
+    } else {
+			console.log(' Data returned from specific number  ');
+	           var arr=[];
+            for(i=0;i<sensors.length;i++){
+				var a=[];
+                name=sensors[i].name;
+				 value=sensors[i].value;
+				 created=sensors[i].created;
+				 console.log(' *****  Data returned ' + name + ' Value '+value + ' created '+created);							
+               
+				    arr.push({evt: parseFloat(value), timestamp: created});
+
+					
+                }
+				
+					
+res.contentType('application/json');
+return res.send(JSON.stringify(arr));
+					console.log(' Data returned  results'+arr);
+
+    }
+  }).sort({_id:-1}).limit(top);
+	
+}
+
+
+
+
+  
+});
+
+// Display Tutorials PDF 
+
+router.get('/documentation', function(request, response){
+		console.log(' Display PDF from Node.JS');
+
+  var tempFile="SenseEgypt-UserGuide.pdf";
+  fs.readFile(tempFile, function (err,data){
+	  		console.log(' Display PDF from Node.JS Error '+err);
+
+     response.contentType("application/pdf");
+     return response.send(data);
+  });
+});
+
 
 
 //Get Entroby
@@ -402,7 +532,6 @@ console.log(' The Sensor Name Selected is from Get Device Data '+sensorName);
 		//'name': sensorName
 	SensorDataMod.find({'name': sensorName}, function(err, sensors) {
 				console.log(' From Find Data ');
-				
     if (err) {
 		
 		console.log(' Error in get devices Data ');
@@ -521,8 +650,8 @@ router.post('/login', function(req, res) {
     }
 	
 	
-  req.session.api_key = req.body.api_key;
-  req.session.auth_token = req.body.auth_token;
+ // req.session.api_key = req.body.api_key;
+  //req.session.auth_token = req.body.auth_token;
 
  // res.redirect("/index");
 });
@@ -534,9 +663,14 @@ router.post('/logout', function(req, res) {
 });
 
 router.get('/logout', function(req, res) {
-  req.session.destroy();
-   //  res.render('index', { logged:'false'});
-	 res.redirect("/login");
+
+       req.session.destroy();
+
+      res.redirect('/login');
+	   //res.render('index', { logged:'false'});
+
+
+
 
 });
 

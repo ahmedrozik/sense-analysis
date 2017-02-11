@@ -83,7 +83,7 @@ var Realtime = function() {
 
 		var connectOptions = new Object();
 		connectOptions.keepAliveInterval = 3600;
-		connectOptions.useSSL=false;
+		connectOptions.useSSL=true;
 		//connectOptions.userName=api_key;
 		//connectOptions.password=auth_token;
 

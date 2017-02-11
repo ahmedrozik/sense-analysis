@@ -1,14 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2014 IBM Corporation and other Contributors.
-*
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-* IBM - Initial Contribution
-*******************************************************************************/
 
 var Historian  = function () {
 
@@ -21,6 +10,9 @@ var Historian  = function () {
 
 	this.plotHistoricGraph = function (){
 		var item = $( "#deviceslist" ).val();
+		var sensorData=item.split("|");
+		sensorID=sensorData[0];
+		
 		if(item) {
 			var tokens = item.split(':');
 
@@ -30,23 +22,42 @@ var Historian  = function () {
 			
 			if(top == "topEvents") {
 				queryParam = {
-					top: $(historicTopRange).spinner( "value" )
+					top: $(historicTopRange).spinner( "value" ),
+					sensorID:sensorID,
+					isdate:'false'
 				};
 			} 
 			else if(top == "dateRange") {
 				//Datetimes only in GMT
-				var startDate = Date.parse($(historicStarts).val()+" GMT");
-				var endDate = Date.parse($(historicEnds).val()+" GMT");
+			//	var startDate = Date.parse($(historicStarts).val()+" GMT");
+	        	var startDate = new Date($(historicStarts).val()).toISOString();
+
+				
+
+			    var endDate = new Date($(historicEnds).val()).toISOString();
+
+
+								
 				queryParam = {
 					start: startDate,
-					end: endDate
+					end: endDate,
+					sensorID:sensorID,
+					isdate:'true'
+
 				};
 			}
-			
-		/*	$.ajax
+		
+		
+		
+					console.log("Historic Start Date is  "+startDate + "  EnD Date "+endDate );
+
+/*		
+
+
+			$.ajax
 			({
 				type: "GET",
-				url: "/api/v0001/historian/"+tokens[1]+"/"+tokens[2]+"/"+tokens[3],
+				url: "/api/v0002/historian/"+tokens[1]+"/types/"+tokens[2]+"/devices/"+tokens[3],
 				data: queryParam,
 				dataType: 'json',
 				async: true,
@@ -63,7 +74,43 @@ var Historian  = function () {
 					console.log(xhr.status);
 					console.log(thrownError);
 				}
-			});*/
+			});
+	
+
+*/	
+			//gethistoricdata
+			
+				var data = queryParam;
+					data.title = "title";
+					data.message = "message";
+					
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        contentType: 'application/json',
+                        url: '/gethistoricdata',						
+                        success: function(data) {
+                            console.log('success');
+							
+				  var dataStr=JSON.stringify(data);
+				   var str1 = dataStr.replace(/"/g, '');
+                   
+				  console.log("Historic Data Returned is "+str1);
+
+				   //clear prev graphs
+					$('#chart').empty(); 
+					$('#timeline').empty();
+					$('#legend').empty();
+					historianGraph.displayHistChart(null,data);
+				 
+ 
+
+                        }
+                    });
+					
+			
+			
+			
 		}
 	}
 

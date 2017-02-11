@@ -19,16 +19,18 @@ router.get('/', function(req, res) {
 	console.log("Auth.js ////// index Page");
 	 
 	   if(req.session.isLoggedIn == "true" || req.session.isLoggedIn == true ){
+		   	console.log(" /////   User is logged :: true ");
+
 	   res.render('index',{ title: 'SenseEgypt' ,logged:'true'});
 
  }else{
 	 
-	 
+	 	console.log(" /////   User is not  logged ::  false");
+
 	 	   res.render('index',{ title: 'SenseEgypt',logged:'false' });
 
  }
  
-  //res.render('index', { title: 'SenseEgypt' ,logged:'false'});
 });
 
 

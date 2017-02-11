@@ -35,20 +35,22 @@
 
 		    $('#channelsList').hide(); 
 		    $('#SIGNOUT').hide(); 
-
-
- var isLogged = <%= logged %>;
+            $('#SIGNUP').hide(); 
+	        $('#SIGNIN').hide(); 
+ var isLogged=false ;
+ 
+isLogged= <%= logged %>;
 console.log("User Logged "+isLogged);
 			
 
 islogged=JSON.stringify(isLogged);
 
-if(isLogged == true || isLogged == 'true' ){
+if(isLogged == true || isLogged == 'true' || isLogged == "true" ){
 
   $('#channelsList').show(); 
   console.log("User Logged  SHow Channels "+isLogged);
   					    $('#SIGNUP').hide(); 
-						  					    $('#SIGNIN').hide(); 
+					    $('#SIGNIN').hide(); 
 
 						  $('#SIGNOUT').show(); 
 
@@ -99,12 +101,19 @@ if(isLogged == true || isLogged == 'true' ){
    
    
    
-		</a>   
+		</a>  
+
+
+	   <div id="publicchannel" class="nav navbar-nav navbar-right">
+          <li><a href="publicchannel">Public Channels</a></li>
+        </div>
 
 		</div>
     <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<div id="channelsList" class="nav navbar-nav navbar-right">
+      
+	  
+	  <ul class="nav navbar-nav">
+       <div id="channelsList" class="nav navbar-nav navbar-right">
             <li class="dropdown">
              <a href="#" class="dropdown-toggle"
              data-toggle="dropdown">  
@@ -117,28 +126,35 @@ if(isLogged == true || isLogged == 'true' ){
           </ul> 
             </li>
              
-            </div>
+            </div>	
 
       </ul>
+	  
+	  		
+
+
       <ul class="nav navbar-nav navbar-right">
 
         <li class="dropdown">
-        <!--  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a> -->
+        <a href="documentation" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a> 
           <ul class="dropdown-menu">
-            <li><a href="index">Documentation</a></li>
-            <li><a href="index">Tutorials</a></li>
+            <li><a target="_blank"  href="documentation">Documentation</a></li>
+            <li><a  target="_blank" href="documentation">Tutorials</a></li>
           </ul>
         </li>
+		
+		<div id="SIGNUP" class="nav navbar-nav navbar-right">
+
+
+          <li><a href="sign_up">Sign Up</a></li>
+</div>
+
 <div id="SIGNIN" class="nav navbar-nav navbar-right">
 
           <li> <a href="login">Sign In</a></li>
 
 </div>
-<div id="SIGNUP" class="nav navbar-nav navbar-right">
 
-
-          <li><a href="sign_up">Sign Up</a></li>
-</div>
 
 <div id="SIGNOUT" class="nav navbar-nav navbar-right">
 

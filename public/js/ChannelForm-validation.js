@@ -41,9 +41,11 @@ $("form[name='addchannel']").validate({
 			
 		   var itemSelected = $("#deviceType option:selected").last();
 		var sensorType = itemSelected.val();
-		var sms,email ;
+		var sms,email,ispublic ;
 		var isEmailChecked=$('#email').prop('checked');
 		var isSMSChecked=$('#sms').prop('checked');
+		var isPublicChecked=$('#ispublic').prop('checked');
+				
 if(isEmailChecked){
 email=$('#email').val()
 }else{
@@ -54,6 +56,13 @@ if(isSMSChecked){
 sms=$('#sms').val()
 }else{
 sms="";
+}
+
+
+if(isPublicChecked){
+ispublic=$('#ispublic').val()
+}else{
+ispublic="false";
 }
 
 
@@ -96,7 +105,7 @@ function storeTblValues()
 
 		console.log("SMS Value is "+$('#sms').val()+"Email"+$('#email').val() + " Sensor Type "+sensorType);
                     console.log('select_link clicked');
-				    var data = {maxthreshold:$('#channel_maxThreshold').val(),minthreshold:$('#channel_minThreshold').val(),name:$('#channel_name').val(),description:$('#channel_description').val(),longitude:$('#channel_longitude').val(),latitude:$('#channel_latitude').val(),field1:$('#channel_field1').val(),mobile:$('#channel_mob').val(),sms:sms,email:email,sensortype:sensorType,eventSensor:sensorID,actuatorsList:TableData};
+				    var data = {maxthreshold:$('#channel_maxThreshold').val(),minthreshold:$('#channel_minThreshold').val(),name:$('#channel_name').val(),description:$('#channel_description').val(),longitude:$('#channel_longitude').val(),latitude:$('#channel_latitude').val(),field1:$('#channel_field1').val(),mobile:$('#channel_mob').val(),sms:sms,email:email,ispublic:ispublic,sensortype:sensorType,eventSensor:sensorID,actuatorsList:TableData};
 					data.title = "title";
 					data.message = "message";
 					

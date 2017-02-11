@@ -1,14 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2014 IBM Corporation and other Contributors.
-*
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-* IBM - Initial Contribution
-*******************************************************************************/
 
 var HistorianGraph = function(){
 
@@ -101,20 +90,74 @@ var HistorianGraph = function(){
 
 	};
 
-	this.displayHistChart = function(device,data){
+	
+	this.displayHistChart = function(device,histData){
 
 		var seriesData = [];
+		var counter = 0;
+	    var data = histData;
+        var key = 0;
+		
+		             	seriesData[key]={};
+						seriesData[key].color = this.palette.color();
+						seriesData[key].data=[];
+						seriesData[key].name=0;
+
+					
+						
+	for(var i =0;  i < data.length  ; i++ ){		   		
+	var timestamp = Date.now()/1000+i;
+            	var startDate  = new Date(data[i].timestamp);
+				//startDate=Math.round(startDate.getTime()/1000);
+				startDate=startDate.getTime()/1000
+//startDate=startDate.getTime();
+				console.log(" *****  Data Element is   "+startDate + " Time Stamp "+timestamp);
+
+				
+					seriesData[key].data[i]={};
+					
+					//seriesData[key].data[i].x = data[i].timestamp.$date/1000;// timestamp;
+					seriesData[key].data[i].x = timestamp;
+                 //   seriesData[key].data[i].x=startDate;
+					seriesData[key].data[i].y = data[i].evt;
+				
+				//	key++;
+					
+				console.log(" *****  Data Element is "+data[i].timestamp);
+
+//				
+			
+			//counter++;
+		}	
+		
+						console.log(" *****  Drawing Date with length "+seriesData[0].data.length);;
+
+		this.drawGraph(seriesData);
+		
+	}
+	
+	
+	/*
+	this.displayHistChart = function(device,histData){
+	
+	console.log("Display History Chart");
+
+		var seriesData = [];
+		var timestamp = Date.now()/1000;
 
 		var counter = 0;
+
+		//var data = histData.events;
 		
-		for(var i = data.length-1 ; i>=0 ;i-- ){	
+	    var data = histData;
+
+		for(var i =0;  i < data.length  ; i++ ){	
 	   		
 	   		var key = 0;	
 			
-			for (var j in data[i].evt){
-
-				if (typeof data[i].evt[j] !== 'string') {
-					if(i===data.length-1){
+   for(var j = 0;j < data[i].length; j++) {
+				if (typeof data[i][j] !== 'string') {
+					if(i=== 0 ){
 						seriesData[key]={};
 						seriesData[key].name=j;
 						seriesData[key].color = this.palette.color();
@@ -122,9 +165,9 @@ var HistorianGraph = function(){
 					}
 					
 					seriesData[key].data[counter]={};
-					seriesData[key].data[counter].x = data[i].timestamp.$date/1000;// timestamp;
-					seriesData[key].data[counter].y = data[i].evt[j];
-				
+					seriesData[key].data[counter].x = timestamp;
+					seriesData[key].data[counter].y = data[i][j];
+				console.log("Data Element is "+data[i][j]);
 					key++;
 				}
 			}
@@ -133,6 +176,15 @@ var HistorianGraph = function(){
 		}	
 		this.drawGraph(seriesData);
 		
-	};
+	}
+	
+	*/
+	
+	
+	
+
+
+	
+	
 
 };

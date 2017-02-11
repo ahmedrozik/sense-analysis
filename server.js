@@ -278,7 +278,6 @@ transporter.sendMail(mailOptions, function(error, info){
 
 app.use('/',index);
 
-
 app.use(function(req, res, next) {
     if(req.session.api_key){
 		console.log("APP.JS 4");
@@ -290,7 +289,9 @@ app.use(function(req, res, next) {
 	  console.log("App login ");
 	  
        //res.render('login');
-       res.redirect("/login");
+     //  res.redirect("/index");
+	req.session['logged'] = 'false';
+res.redirect("/index");
 
 				//res.render("login",{ title: 'ejs' });
 

@@ -18,6 +18,7 @@ var schema = mongoose.Schema({
   , emailEvent: { type: String, required: false}
   , type: { type: String, required: true}
   , eventSensor: { type: String, required: false}
+  , ispublic: { type: String, required: false}
 
 
   });

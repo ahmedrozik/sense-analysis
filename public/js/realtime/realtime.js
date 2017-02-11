@@ -12,7 +12,7 @@ var Realtime = function() {
 	var client;
     var rtGraph;
 	this.initialize = function(){
-		client = new Messaging.Client(hostname, 8883,clientId);
+		client = new Messaging.Client(hostname, 8000,clientId);
 
 		// Initialize the Realtime Graph
 		rtGraph = new RealtimeGraph();
@@ -83,7 +83,7 @@ var Realtime = function() {
 
 		var connectOptions = new Object();
 		connectOptions.keepAliveInterval = 3600;
-		connectOptions.useSSL=true;
+		connectOptions.useSSL=false;
 		//connectOptions.userName=api_key;
 		//connectOptions.password=auth_token;
 

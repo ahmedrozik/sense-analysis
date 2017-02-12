@@ -132,8 +132,8 @@ console.log("Sending Email");
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'jdev.cs2011@gmail.com',
-        pass: 'programmercs2011'
+        user: 'senseegypt2020@gmail.com',
+        pass: '0105570894'
     }
 });
 
@@ -142,11 +142,11 @@ var transporter = nodemailer.createTransport({
 
 // setup e-mail data with unicode symbols
 var mailOptions = {
-    from: 'EGY-Talk <jdev.cs2011@gmail.com>', // sender address
+    from: 'SenseEgypt <senseegypt2020@gmail.com>', // sender address
     to: email, // list of receivers
     subject: 'Sense Egypt Sensor Alert', // Subject line
     text: 'SenseEgypt Sensor Alert', // plaintext body
-    html: '<b>Sensor Alert from SenseEgypt Platform Regarding your sensor Alerts </b>' // html body
+    html: '<b>Sensor Alert from SenseEgypt Platform Regarding your sensor measurements which is currently :  '+message+'</b>' // html body
 };
 
 // send mail with defined transport object

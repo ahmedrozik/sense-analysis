@@ -7,15 +7,20 @@
   },
   "main": "server.js",
   "dependencies": {
+    "async": "^2.3.0",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.0.0",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
     "express": "~4.2.0",
+    "express-flash": "0.0.2",
     "express-session": "^1.8.1",
     "jade": "~1.3.0",
     "mongoose": "^4.0.3",
     "morgan": "~1.0.0",
     "mqtt": "*",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "serve-favicon": "~2.1.0",
     "stylus": "0.42.3"
   }

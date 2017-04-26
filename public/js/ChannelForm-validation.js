@@ -2,6 +2,26 @@
 $(function() {
   // Initialize form validation on the registration form.
   // It has the name attribute "registration"
+  
+    // Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
 $("form[name='addchannel']").validate({
     // Specify validation rules
 	    errorClass: "my-error-class",
@@ -118,32 +138,29 @@ function storeTblValues()
                             console.log('success');
                             console.log(JSON.stringify(data));
 							//<input type="text" name="txtbx'+cnt+'" value="'+cnt+'">
-									    $('#channelsettings').hide(); 
-										var today = new Date();
-                                        var dd = today.getDate();
-                                        var mm = today.getMonth()+1; //January is 0!
-                                        var yyyy = today.getFullYear();
-                                        if(dd<10) {
-                                           dd='0'+dd
-                                        } 
-
-                                         if(mm<10) {
-                                          mm='0'+mm
-                                          }    
-
-                                        today = mm+'/'+dd+'/'+yyyy;
-										
-		
 				  var dataStr=JSON.stringify(data);
 				   var str1 = dataStr.replace(/"/g, '');
-				  console.log("Generated Id"+str1);
+			  console.log("Generated Id"+str1);
 				  
 				  
+				  
+				       
+					  
+					  if(str1 == 'true' || str1 == "true"){
+					  
+                  //    $('#new_user').find('input:radio, input:checkbox').prop('checked', false);
+					     document.getElementById("user_msg").innerHTML = "Your Device has been created successfully and you can go to your <a href='channel'> channels</a> now ";
 
+						 modal.style.display = "block";
 
-  $('#sensorsTable tr:last').after('<tr><td> <h4 style="margin-top: 0;"> <a href="dashboard?sensorId='+str1+'"> <i class="fa fa-unlock fa-fw"></i> '+$('#channel_name').val()+'</a> </h4><h6 style="margin-top: 15px;">MQTT Topic ID :'+str1+'</h6></td><td>'+today+'</td></tr>');
+					  }else{
+					  console.log("User Not Created");
+										  document.getElementById("user_msg").innerHTML = "Device is not created!";
+
+					  					      modal.style.display = "block";
+
+					  }
  
-
                         }
                     });
 

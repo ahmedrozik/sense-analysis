@@ -9,8 +9,15 @@ var schema = mongoose.Schema({
   , mobile: { type: String, required: true }
   , salt: { type: String, required: true }
   , hash: { type: String, required: true }
+   , resetPasswordToken: String
+    , resetPasswordExpires: Date
+	   , accesstoken: String
+   , acesstokensecret: String
+   , twitteraccount: String
+
 });
 
+  
 // add created date property
 schema.plugin(createdDate);
 

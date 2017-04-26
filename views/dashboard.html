@@ -252,7 +252,7 @@ width: 850px;
 
 <div id="content"></div>
 <form id="side_panel" class="iotsidepanel">
-  <div class="devices">
+  <div class="devices" style="word-wrap: break-word; resize: both;overflow: auto;display:inline-block;">
     <h1 class="devicesText">Device:</h1>
     <select id="deviceslist" class="devicesSelect">
       <option value="">Select a device</option>
@@ -622,16 +622,18 @@ xhr.send(JSON.stringify(data));
 </div>
 
 	
-    <div id="footer">
+  <div id="footer">
   <div class="container">
     <p class="text-muted">
 
       <span class="hidden-xs pull-left">
-        <a href="" title="Open Source Internet of Things">SenseEgypt.com</a> |
-        <a href="" title="SenseEgypt Documentation">Documentation</a> |
-        <a href="" title="Tutorials on how to use SenseEgypt Platform">Tutorials</a>
+        <a href="index" title="Open Source Internet of Things">SenseEgypt.com</a> |
+        <a href="index" title="SenseEgypt Documentation">Documentation</a> |
+        <a href="index" title="Tutorials on how to use SenseEgypt platform">Tutorials</a> |
       </span>
-    
+      <span class="pull-right">
+        &copy;2017 <a href="index" title="Open Source Internet of Things">SenseEgypt</a> - Powered by <a href="" target="_blank">SenseEgypt</a>
+      </span>
 
     </p>
   </div>

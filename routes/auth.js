@@ -25,11 +25,346 @@ var DTW = require('dtw');
 console.log("Auth test");
 
 
+var bcrypt = require('bcrypt-nodejs');
+var async = require('async');
+var querystring = require("querystring");
+
+
+
 var client = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
 var client2 = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
+var Twitter = require('twitter');
+
+
+var OAuth = require('oauth').OAuth
+  , oauth = new OAuth(
+      "https://api.twitter.com/oauth/request_token",
+      "https://api.twitter.com/oauth/access_token",
+      "qu8pVznlr5URezLqEWByr96f8",
+      "KDKyqdcmgxxbgekSoQuRcms0HpdRzxyxxevrKaRhBqoTumqRP7",
+      "1.0",
+      "http://127.0.0.1:8080/auth/twitter/callback",
+      "HMAC-SHA1"
+    );
+ 
+
+
+
+router.get('/auth/twitter', function(req, res) {
+ 
+  oauth.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results) {
+    if (error) {
+      console.log(error);
+      res.send("Authentication Failed!");
+    }
+    else {
+      req.session.oauth = {
+        token: oauth_token,
+        token_secret: oauth_token_secret
+      };
+      console.log(req.session.oauth);
+      res.redirect('https://twitter.com/oauth/authenticate?oauth_token='+oauth_token)
+    }
+  });
+ 
+});
+
+
+
+router.get('/auth/twitter/callback', function(req, res, next) {
+ 
+  if (req.session.oauth) {
+    req.session.oauth.verifier = req.query.oauth_verifier;
+    var oauth_data = req.session.oauth;
+ 
+    oauth.getOAuthAccessToken(
+      oauth_data.token,
+      oauth_data.token_secret,
+      oauth_data.verifier,
+      function(error, oauth_access_token, oauth_access_token_secret, results) {
+        if (error) {
+          console.log(error);
+          res.send("Authentication Failure!");
+        }
+        else {
+			
+			 console.log("Twitter Account "+results["screen_name"]);
+
+          req.session.oauth.access_token = oauth_access_token;
+          req.session.oauth.access_token_secret = oauth_access_token_secret;
+          console.log(results, req.session.oauth);
+        //  res.send("Authentication Successful");
+          res.redirect('/apps?twitter_account='+results["screen_name"]+'+&access_token='+oauth_access_token+'&access_token_secret='+oauth_access_token_secret); // You might actually want to redirect!
+        }
+      }
+    );
+  }
+  else {
+    res.redirect('/login'); // Redirect to login page
+  }
+ 
+});
+
+
+// Login page
+router.get('/apps', function(req, res) {
+	var qs = querystring.parse(req.url.split("?")[1]),
+    access_token = qs.access_token ;
+   var access_token_secret=qs.access_token_secret;
+   
+      var twitter_account=qs.twitter_account;
+
+		console.log("Get APPS  Get access_token"+access_token+" access_token_secret"+access_token_secret);
+
+		
+   
+     	var email=req.session.user;	
+
+		  User.findById(email, function (err, user) {
+			  user.twitteraccount=twitter_account;
+		      user.accesstoken=access_token;
+			  user.acesstokensecret=access_token_secret;
+			      user.save(function(err) {
+					  console.log(" Twitter Accont has beedn added to DB");
+
+					
+        });
+		
+
+		  });
+  
+ 
+
+	
+	
+		
+		
+	
+	   	res.render('apps',{ twitter_account:twitter_account,access_token:access_token,access_token_secret:access_token_secret});
+		
+		
+  // res.render('apps', { title: 'SenseEgypt',logged:'false' });
+  //res.redirect('/apps');
+});
+
+
+
+
+
+
+router.post('/forgot', function(req, res, next) {
+	console.log("From forgot ");
+	   var email = cleanString(req.param('email'));
+	console.log("USER :"+email );
+  
+
+    // user friendly
+    email = email.toLowerCase();
+
+		
+		
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(20, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      User.findById(email, function(err, user) {
+        if (!user) {
+		  	res.render('forgot', { message:'No account with that email address exists' });
+
+        }
+	console.log("USER is found :"+user )
+	;
+if(user != null){
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+        user.save(function(err) {
+          done(err, token, user);
+		  		  	res.render('forgot', { message:'Cant fetch data from DB' });
+
+					
+        });
+		
+      }
+     });
+    },
+    function(token, user, done) {
+ 
+	  
+	  var smtpTransport = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'senseegypt2020@gmail.com',
+        pass: '0105570894'
+    }
+});
+
+	  
+      var mailOptions = {
+        to: email,
+        from: 'SenseEgypt <senseegypt2020@gmail.com>',
+        subject: 'Password Reset',
+        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+      };
+      smtpTransport.sendMail(mailOptions, function(error,info) {
+		          console.log("Will try to send email");
+
+         if(error){
+        console.log(error);
+				res.render('forgot', { message:'We are unable to send you an EMail , please check if your email still active' });
+
+    }else{
+        console.log('Message sent: ' + info.response);
+		res.render('forgot', { message:'An e-mail has been sent to ' + email + ' with further instructions' });
+
+    }
+	
+	
+	
+      });
+    }
+  ], function(err) {
+    if (err) return next(err);
+				res.render('forgot', { message:'We are unable to send you an EMail , please check if your email still active' });
+
+
+	});
+});
+
+
+
+
+router.get('/reset/:token', function(req, res) {
+	console.log("111 From Forgot Password token is "+req.params.token);
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+    if (!user) {
+	console.log("222 User not existing");
+
+      req.flash('error', 'Password reset token is invalid or has expired.');
+      return res.redirect('/forgot');
+    }
+	
+	      // res.render('forgot');
+	//	res.render('reset', {email :'jdev.cs2011@gmail.com' });
+      return res.redirect('/reset?token=' + req.params.token);
+
+  //  res.render('forgot');
+  });
+});
+
+
+router.post('/reset', function(req, res) {
+	
+									console.log("55555555 Reset password form :: User is not existing "+req.url);
+
+   
+   
+   
+   var qs = querystring.parse(req.url.split("?")[1]),
+   token = qs.token ;
+   
+   
+       var tokenid = cleanString(req.param('tokenid'));
+
+	   
+	   
+   
+   		console.log("6666666 Reset password form :: User is not existing  ttt "+token + " Token id is "+tokenid);
+token=tokenid;
+  async.waterfall([
+    function(done) {
+      User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+        if (!user) {
+			console.log("Reset password form :: User is not existing ");
+          req.flash('error', 'Password reset token is invalid or has expired.');
+          return res.redirect('forgot');
+        }
+if(user != null){
+        user.password = req.body.password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        user.save(function(err) {
+            done(err, user);
+        
+        });
+}
+      });
+    },
+    function(user, done) {
+	  var smtpTransport = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'senseegypt2020@gmail.com',
+        pass: '0105570894'
+    }
+});
+      var mailOptions = {
+        to: user._id,
+        from: 'senseegypt2020@gmail.com',
+        subject: 'Your password has been changed',
+        text: 'Hello,\n\n' +
+          'This is a confirmation that the password for your account ' + user._id + ' has just been changed.\n'
+      };
+      smtpTransport.sendMail(mailOptions, function(error,info) {
+        req.flash('success', 'Success! Your password has been changed.');
+		
+		       if(error){
+        console.log(error);
+
+    }else{
+        console.log('Message sent: ' + info.response);
+
+    }
+	
+	
+        done(error);
+      });
+    }
+  ], function(err) {
+    res.redirect('/');
+  });
+});
+
+
 
 
 router.get('/channel', function(req, res) {
+	console.log("Channel Page");
+	res.render('mythings', {  ispublic: 'false' , logged:'true' });
+
+
+
+
+});
+
+
+router.get('/reset', function(req, res) {
+	console.log(" 233333 Reset  Page");
+	res.render('reset', {  ispublic: 'false' , logged:'true' });
+
+});
+
+
+
+
+router.get('/forgot', function(req, res) {
+	console.log("new pass Page");
+	res.render('forgot', {message: 'false'});
+
+
+
+
+});
+
+router.get('/addthing', function(req, res) {
 	console.log("Channel Page");
 	res.render('channel', {  ispublic: 'false' , logged:'true' });
 
@@ -43,12 +378,12 @@ router.get('/channel', function(req, res) {
 router.get('/publicchannel', function(req, res) {
 	console.log("Public Channel Page");
 	 if(req.session != null && req.session.isLoggedIn == "true" || req.session.isLoggedIn == true){
-	   res.render('channel',{  ispublic: 'true' ,logged:'true'});
+	   res.render('mythings',{  ispublic: 'true' ,logged:'true'});
 
  }else{
  
  
-  res.render('channel',{  ispublic: 'true' ,logged:'false'});
+  res.render('mythings',{  ispublic: 'true' ,logged:'false'});
  }
 
 
@@ -86,6 +421,9 @@ if(( parseInt(message) >= parseInt(maxThreshold) ) || (parseInt(message)  <= par
 //console.log("send email"+parseInt(sensor.maxthreshold)  +"message "+ parseInt(message) );
 var eventSensor=sensor.eventSensor;
 
+	console.log(" %%%%%%%%%%%% Before SMS Dats is "+sensor.sms);
+
+	
 if(actuator != "No" || actuator != "No	"){
 	console.log(" %%%%%%%%%%%% Message Publised to Event Trigger");
 	client.publish(actuator, command);
@@ -99,32 +437,10 @@ if(actuator != "No" || actuator != "No	"){
 var mobile=sensor.mobile;
 		
 var email=sensor.email;
-if(sensor.sms == "sms"){
-/*	console.log("Sending SMS");
-//The url we want is: 'www.random.org/integers/?num=1&min=1&max=10&col=1&base=10&format=plain&rnd=new'
-var options = {
 
-  host: 'api.clickatell.com',
-  path: '/http/sendmsg?user=ahmedsalahrozik&password=ALTQKUDBQ8452&api_id=3550847&to='+mobile+'&text=Message'
-};
+	console.log(" %%%%%%%%%%%%  After SMS Dats is "+sensor.sms);
 
-callback = function(response) {
-  var str = '';
 
-  //another chunk of data has been recieved, so append it to `str`
-  response.on('data', function (chunk) {
-    str += chunk;
-  });
-
-  //the whole response has been recieved, so we just print it out here
-  response.on('end', function () {
-    console.log(str);
-  });
-}
-console.log("SMS request "+options.path);
-http.request(options, callback).end();
-*/
-}
 
 if(sensor.emailEvent == "email"){
 console.log("Sending Email");
@@ -155,8 +471,53 @@ transporter.sendMail(mailOptions, function(error, info){
         console.log(error);
     }else{
         console.log('Message sent: ' + info.response);
+		console.log("******************  will ssss sending Tweets");
+
     }
 });
+
+console.log("******************  before sending Tweets");
+
+//
+if(sensor.sms == "sms"){
+
+
+
+console.log("****************** sending Tweets");
+	  User.findById(email, function (err, user) {
+
+
+		      
+			  
+
+		 
+		  
+		  
+		  
+var twit = new Twitter({
+  consumer_key: 'qu8pVznlr5URezLqEWByr96f8',
+  consumer_secret: 'KDKyqdcmgxxbgekSoQuRcms0HpdRzxyxxevrKaRhBqoTumqRP7',
+  access_token_key: user.accesstoken,
+  access_token_secret: user.acesstokensecret
+});
+ 
+
+
+twit.post('statuses/update', {status: 'Sensor Alert from SenseEgypt Platform Regarding your sensor measurements which is currently :  '+message},  function(error, tweet, response) {
+  if(error) {
+	  
+	    console.log(error)
+  }
+  
+  console.log(tweet);  // Tweet body. 
+  console.log(response);  // Raw response object. 
+});
+
+
+ });
+}
+
+
 
 }
 
@@ -301,11 +662,12 @@ console.log(" name" +sensor.name +"  desc "+sensor.description +"  longit"+senso
 			 //return invalid();
             } 
          //   return next(err);
+		 return res.send('false')
           }
 		        req.session.isLoggedIn = true;
          
           console.log('created user: %s',  req.session.user );
-           return res.send(sensorId);
+           return res.send('true');
         })
 		
 	

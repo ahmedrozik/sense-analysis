@@ -1,0 +1,11 @@
+1- send alrets in not less than 10 seconds
+2- implement Minimum Ratio
+3- Auto corrlations algorithm
+4- Sensor Data Analytics
+5- Twitter Integration (Thing Tweet)
+6- Create Manuals to use SenseEgypt
+7- Egypt First IoT Platform   remove from home page 
+8- Add Public Channels  --- in addin  to private 
+Seminar 29/1 
+	
+	

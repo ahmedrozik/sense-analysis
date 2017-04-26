@@ -17,7 +17,7 @@ var https = require('https')
 
 var DTW = require('dtw');
 
-
+var flash = require('express-flash');
 
 
 
@@ -46,6 +46,22 @@ var app = express();
 var http_host = (process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
 var http_port = (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
 
+
+
+
+ 
+
+
+
+
+
+var Twitter = require('twitter');
+ 
+
+
+
+
+
 app.set('sensorCounter',2);
 app.set('port', http_port);
 app.set('host',http_host);
@@ -63,11 +79,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 // add session to store the api-key and auth token in the session
-app.use(session({secret: 'iotfCloud123456789',saveUninitialized: true,
-                 resave: true}));
+app.use(session({ secret: 'session secret key' }));
+app.use(flash());
+
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 var client = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
+
+
+
+
+
+
+
 
 
 
@@ -147,30 +171,41 @@ var mobile=sensor.mobile;
 		
 var email=sensor.email;
 if(sensor.sms == "sms"){
-/*	console.log("Sending SMS");
-//The url we want is: 'www.random.org/integers/?num=1&min=1&max=10&col=1&base=10&format=plain&rnd=new'
-var options = {
 
-  host: 'api.clickatell.com',
-  path: '/http/sendmsg?user=ahmedsalahrozik&password=ALTQKUDBQ8452&api_id=3550847&to='+mobile+'&text=Message'
-};
 
-callback = function(response) {
-  var str = '';
 
-  //another chunk of data has been recieved, so append it to `str`
-  response.on('data', function (chunk) {
-    str += chunk;
-  });
+console.log("****************** sending Tweets");
+	  User.findById(email, function (err, user) {
 
-  //the whole response has been recieved, so we just print it out here
-  response.on('end', function () {
-    console.log(str);
-  });
-}
-console.log("SMS request "+options.path);
-http.request(options, callback).end();
-*/
+
+		      
+			  
+
+		 
+		  
+		  
+		  
+var twit = new Twitter({
+  consumer_key: 'qu8pVznlr5URezLqEWByr96f8',
+  consumer_secret: 'KDKyqdcmgxxbgekSoQuRcms0HpdRzxyxxevrKaRhBqoTumqRP7',
+  access_token_key: user.accesstoken,
+  access_token_secret: user.acesstokensecret
+});
+ 
+
+
+twit.post('statuses/update', {status: '#IoT, Sensor Alert from SenseEgypt Platform Regarding your sensor measurements which is currently :  '+message +' at '+ Date.now()},  function(error, tweet, response) {
+  if(error) {
+	  
+	    console.log(error)
+  }
+  
+  console.log(tweet);  // Tweet body. 
+  console.log(response);  // Raw response object. 
+});
+
+
+ });
 }
 
 if(sensor.emailEvent == "email"){

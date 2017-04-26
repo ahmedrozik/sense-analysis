@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+  
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<head>
+  <title>Channels - SenseEgypt</title>
+  <meta content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  
+    <script src="js/jquery.validate.min.js"></script>
+
+<script src="js/ChannelForm-validation.js"></script>
+
+<!--  <script src="js/SignUpForm-validation.js"></script> -->
+  <!--<script data-turbolinks-track="true" src="js/application-6fc220d7a77fd902426521898e0585b7.js"></script> -->
+
+  <script type='text/javascript' src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link href="css/font-awesome.min.css" media="screen" rel="stylesheet" />
+  <link data-turbolinks-track="true" href="css/application-34ab6c80c76e48d799f77e7e60386577.css" media="screen" rel="stylesheet" />
+
+<style>
+
+
+input[type="checkbox"]{
+  width: 20px; /*Desired width*/
+  height: 20px; /*Desired height*/
+
+}
+
+
+input.addact {
+    width: 20em;  height: 2em;
+}
+
+
+
+.my-error-class {
+    color:red;
+}
+.my-valid-class {
+    color:green;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #04498d;
+    color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #04498d;
+    color: white;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript"  >
+
+  $(document).on('page:load ready', function() {
+  
+   var isLogged=false ;
+ 
+isLogged= <%= logged %>;
+console.log("User Logged "+isLogged);
+			
+
+islogged=JSON.stringify(isLogged);
+
+
+
+
+ var isPublic = <%= ispublic %>;
+console.log("Is Public ?  "+isPublic);
+isPublic=JSON.stringify(isPublic);
+if((isPublic == true || isPublic == 'true' ) && (isLogged == true || isLogged == 'true' || isLogged == "true")){
+
+isPublic='true';
+ $('#channelsList').show();
+   $('#SIGNUP').hide(); 
+   $('#SIGNIN').hide(); 
+      $('#publicchannel').show(); 
+		    $('#SIGNOUT').show(); 
+		    $('#newdevice').show(); 
+
+}else if((isPublic == true || isPublic == 'true' ) && (isLogged == false || isLogged == 'false' || isLogged == "false")){
+
+isPublic='true';
+  $('#channelsList').hide(); 
+		    $('#SIGNOUT').hide(); 
+      $('#newdevice').hide(); 
+	     $('#SIGNUP').show(); 
+   $('#SIGNIN').show(); 
+
+   $('#publicchannel').show(); 
+
+}else if((isPublic == false || isPublic == 'false' ) && (isLogged == true || isLogged == 'true' || isLogged == "true")) {
+
+isPublic='false';
+  $('#channelsList').show(); 
+		    $('#SIGNOUT').show(); 
+      $('#newdevice').show(); 
+	     $('#SIGNUP').hide(); 
+   $('#SIGNIN').hide(); 
+
+   $('#publicchannel').hide(); 
+
+
+}
+
+
+	
+				
+				    var data = {};
+					data.title = "title";
+					data.message = "message";
+					
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        contentType: 'application/json',
+                        url: '/getActuatorslist',						
+                        success: function(data) {
+                            console.log('success');
+							
+				  var dataStr=JSON.stringify(data);
+				   var str1 = dataStr.replace(/"/g, '');
+                                  	var today = new Date();
+                                        var dd = today.getDate();
+                                        var mm = today.getMonth()+1; //January is 0!
+                                        var yyyy = today.getFullYear();
+                                        if(dd<10) {
+                                           dd='0'+dd
+                                        } 
+
+                                         if(mm<10) {
+                                          mm='0'+mm
+                                          }    
+
+                                        today = mm+'/'+dd+'/'+yyyy;
+                      $.each(data, function(index, element) {
+					  console.log("Email "+ str1);
+					  $("#deviceslist").append("<option value="+element._id+"|"+element.longitude+"|"+element.latitude+"|"+element.minthreshold+"|"+element.maxthreshold+">"+element.description+"</option>");
+ // $('#sensorsTable tr:last').after('<tr><td> <h4 style="margin-top: 0;"> <a href="dashboard?sensorId='+element._id+'"> <i class="fa fa-unlock fa-fw"></i> //'+element.description+'</a> </h4> <h6 style="margin-top: 15px;">MQTT ID :'+element._id+'</h6></td><td>'+today+'</td></tr>');
+  
+         
+                         });				   
+				 
+ 
+
+                        }
+                    });
+
+
+					
+					
+						    var data = {ispublic:isPublic};
+					data.title = "title";
+					data.message = "message";
+					
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        contentType: 'application/json',
+                        url: '/getsensorslist',						
+                        success: function(data) {
+                            console.log('success');
+							      var output = document.getElementById('devicelist');
+var ele='';
+				  var dataStr=JSON.stringify(data);
+				   var str1 = dataStr.replace(/"/g, '');
+                                  	var today = new Date();
+                                        var dd = today.getDate();
+                                        var mm = today.getMonth()+1; //January is 0!
+                                        var yyyy = today.getFullYear();
+                                        if(dd<10) {
+                                           dd='0'+dd
+                                        } 
+
+                                         if(mm<10) {
+                                          mm='0'+mm
+                                          }    
+
+                                        today = mm+'/'+dd+'/'+yyyy;
+										    $("#sensorsTable").find("tr:gt(0)").remove();
+
+                      $.each(data, function(index, element) {
+					  console.log("Email "+ str1);
+  $('#sensorsTable tr:last').after('<tr><td> <h4 style="margin-top: 0;"> <a href="dashboard?sensorId='+element._id+'&p='+isPublic+'"> <i class="fa fa-unlock fa-fw"></i> '+element.description+'</a> </h4> <h6 style="margin-top: 15px;">MQTT ID :'+element._id+'</h6></td><td>'+today+'</td></tr>');
+	   ele+='<div class="col-md-4 col-sm-6 col-xs-12" data-no-turbolink style="word-wrap: break-word;"> <div class="panel panel-primary">'+
+
+    '<div class="panel-heading ellipsis" style="word-wrap: break-word;" >'+
+    '    <a href="dashboard?sensorId='+element._id+'&p='+isPublic+'">  <b>'+
+'<font color="white" size="3"> '+element.name+'</font></b></a>      </div>'+
+
+      '<div class="panel-body">'+
+     
+	   '  <div class="row" style="font-family:verdana;" >'+
+        '  <div class="col-sm-6 col-xs-6" style="font-weight: bold;">MQTT ID:</div>'+
+        '  <div class="col-sm-6 col-xs-6 ellipsis" style="word-wrap: break-word; resize: both;overflow: auto;">'+
+'		<p class="public_channel_description">'+element._id+'</p>'+
+' </div>'+
+      '  </div>'+
+    '    <div class="progress progressbar"> '+
+         ' <div class="progress-bar" role="progressbar" style="width:100%" title="Percentage Complete">'+
+        '  </div>'+
+      '  </div> '+
+      '  <div class="public_channel_tags">'+
+           ' <i class="fa fa-tags"></i>'+
+           '   <a href="">'+element.type+'</a>'+ 
+              
+       ' </div>'+
+    '  </div>'+
+
+   ' </div>'+
+  '</div>';
+   //   output.append(ele);
+
+         
+                         });				   
+				 
+ console.log("DIDSS "+ele);
+output.innerHTML=ele;
+                        }
+                    });
+					
+					
+					
+					
+				
+				
+  });
+
+
+</script>
+
+
+
+
+  
+ 
+<style>
+
+
+table {
+    border-collapse: collapse;
+    width: 90%;
+	position:relative;
+	left:85px;
+}
+
+thead, td {
+    text-align: left;
+    padding: 8px;
+	width:100px;
+	
+}
+
+tr:nth-child(even){
+background-color: white;
+
+}
+
+thead {
+    color: black;
+	background:#317eac;
+}
+
+#add{
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+
+</style>
+
+
+
+
+
+
+
+  
+
+
+  
+  	
+
+
+
+</head>
+
+
+
+
+
+  <body>
+
+    <div id="wrap">
+      <div class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+	    <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="index">
+ <img alt="SenseEgypt logo" height="38" src="images/logo-icon.png"  style="padding: 0 8px; margin-top: 7px;  left: 0px; top: 0px" width="188" />
+ 
+    
+   
+   
+   
+		</a>  
+
+
+	   <div id="publicchannel" class="nav navbar-nav navbar-right">
+          <li><a href="publicchannel">Public Channels</a></li>
+        </div>
+
+		</div>
+    <div class="navbar-collapse collapse">
+      
+	  
+	  <ul class="nav navbar-nav">
+       <div id="channelsList" class="nav navbar-nav navbar-right">
+         
+			
+			
+			 <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Channels 
+		<b class="caret"></b></a> 
+          <ul class="dropdown-menu">
+            <li><a href="channel">My Things</a></li>
+            <li><a   href="addthing">Add New Thing</a></li>
+				        <li><a href="/auth/twitter">Add Twitter Account </a></li>
+
+          </ul>
+        </li>
+		
+		
+		
+             
+            </div>	
+
+      </ul>
+	  
+	  		
+
+
+      <ul class="nav navbar-nav navbar-right">
+
+        <li class="dropdown">
+        <a href="documentation" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a> 
+          <ul class="dropdown-menu">
+            <li><a target="_blank"  href="documentation">Documentation</a></li>
+            <li><a  target="_blank" href="documentation">Tutorials</a></li>
+          </ul>
+        </li>
+		
+		<div id="SIGNUP" class="nav navbar-nav navbar-right">
+
+
+          <li><a href="sign_up">Sign Up</a></li>
+</div>
+
+<div id="SIGNIN" class="nav navbar-nav navbar-right">
+
+          <li> <a href="login">Sign In</a></li>
+
+</div>
+
+
+<div id="SIGNOUT" class="nav navbar-nav navbar-right">
+
+          <li><a href="/logout">Sign Out</a></li>
+</div>
+		  
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+	  
+
+  </div>
+
+
+      <div class="container">
+        
+
+        <div class="row">
+  <div class="col-sm-8 col-xs-12">
+
+    <h4 class="breadcrumb">My Devices</h4>
+
+	<div id="devicelist">
+	
+	
+	
+	</div>
+	
+		  
+
+
+</div>
+
+
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+ </div>
+</div>
+
+
+      </div>
+	
+	
+
+
+
+
+
+  <div id="footer">
+  <div class="container">
+    <p class="text-muted">
+
+      <span class="hidden-xs pull-left">
+        <a href="index" title="Open Source Internet of Things">SenseEgypt.com</a> |
+        <a href="index" title="SenseEgypt Documentation">Documentation</a> |
+        <a href="index" title="Tutorials on how to use SenseEgypt platform">Tutorials</a> |
+      </span>
+      <span class="pull-right">
+        &copy;2017 <a href="index" title="Open Source Internet of Things">SenseEgypt</a> - Powered by <a href="" target="_blank">SenseEgypt</a>
+      </span>
+
+    </p>
+  </div>
+</div>
+
+
+
+
+  </body>
+
+</html>
+

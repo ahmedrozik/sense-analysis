@@ -43,7 +43,7 @@ var OAuth = require('oauth').OAuth
       "qu8pVznlr5URezLqEWByr96f8",
       "KDKyqdcmgxxbgekSoQuRcms0HpdRzxyxxevrKaRhBqoTumqRP7",
       "1.0",
-      "http://127.0.0.1:8080/auth/twitter/callback",
+      "http://iot.senseegypt.com/auth/twitter/callback",
       "HMAC-SHA1"
     );
  

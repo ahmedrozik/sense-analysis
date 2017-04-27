@@ -43,7 +43,7 @@ var OAuth = require('oauth').OAuth
       "qu8pVznlr5URezLqEWByr96f8",
       "KDKyqdcmgxxbgekSoQuRcms0HpdRzxyxxevrKaRhBqoTumqRP7",
       "1.0",
-      "http://127.0.0.1:8080/auth/twitter/callback",
+      "http://senseegypt/auth/twitter/callback",
       "HMAC-SHA1"
     );
  
@@ -55,7 +55,9 @@ router.get('/auth/twitter', function(req, res) {
   oauth.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results) {
     if (error) {
       console.log(error);
-      res.send("Authentication Failed!");
+ //     res.send("Authentication Failed!");
+	   res.redirect('/index'); // Redirect to login page
+
     }
     else {
       req.session.oauth = {
@@ -84,7 +86,9 @@ router.get('/auth/twitter/callback', function(req, res, next) {
       function(error, oauth_access_token, oauth_access_token_secret, results) {
         if (error) {
           console.log(error);
-          res.send("Authentication Failure!");
+        //  res.send("Authentication Failure!");
+		  res.redirect('/index'); // Redirect to login page
+
         }
         else {
 			
@@ -173,18 +177,24 @@ router.post('/forgot', function(req, res, next) {
     function(token, done) {
       User.findById(email, function(err, user) {
         if (!user) {
-		  	res.render('forgot', { message:'No account with that email address exists' });
+				console.log("USER isnot found :"+user )
+
+		  return	res.render('forgot', { message:'No account with that email address exists' });
 
         }
-	console.log("USER is found :"+user )
-	;
-if(user != null){
+	console.log("USER is found :"+user );
+if(user){
         user.resetPasswordToken = token;
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
         user.save(function(err) {
+		  		//  	res.render('forgot', { message:'Cant fetch data from DB' });
+	if(err){
+		return	res.render('forgot', { message:'System Error, Please try again later' });
+
+		
+	}
           done(err, token, user);
-		  		  	res.render('forgot', { message:'Cant fetch data from DB' });
 
 					
         });
@@ -218,7 +228,7 @@ if(user != null){
 
          if(error){
         console.log(error);
-				res.render('forgot', { message:'We are unable to send you an EMail , please check if your email still active' });
+				return res.render('forgot', { message:'We are unable to send you an EMail , please check if your email still active' });
 
     }else{
         console.log('Message sent: ' + info.response);
@@ -276,18 +286,26 @@ router.post('/reset', function(req, res) {
 	   
 	   
    
-   		console.log("6666666 Reset password form :: User is not existing  ttt "+token + " Token id is "+tokenid);
+   		console.log("6666666 Reset password form :: User    Token id is "+tokenid);
 token=tokenid;
   async.waterfall([
     function(done) {
       User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
         if (!user) {
 			console.log("Reset password form :: User is not existing ");
-          req.flash('error', 'Password reset token is invalid or has expired.');
-          return res.redirect('forgot');
+        //  req.flash('error', 'Password reset token is invalid or has expired.');
+          res.redirect('/forgot');
         }
 if(user != null){
-        user.password = req.body.password;
+	
+	      crypto.randomBytes(16, function (err, bytes) {
+        if (err) return invalid();
+    var pass = cleanString(req.param('newpass'));
+	
+	console.log('Password isss '+pass );
+        user.salt = bytes.toString('utf8');
+        user.hash = hash(pass, user.salt);
+
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
 
@@ -295,6 +313,15 @@ if(user != null){
             done(err, user);
         
         });
+
+         
+
+
+      
+      });
+	  
+	
+  
 }
       });
     },
@@ -954,7 +981,7 @@ console.log('Get Registered Sesnros for This user'+email);
 // Login page
 router.get('/login', function(req, res) {
 	console.log("Login Get");
-  res.render('login', { title: 'SenseEgypt',logged:'false' });
+  res.render('login', { title: 'SenseEgypt',logged:'false',error:'false' });
 });
 
 //login page after a login failure
@@ -985,12 +1012,18 @@ router.post('/login', function(req, res) {
       if (err) return next(err);
 
       if (!user) {
-        return invalid();
+      //  return invalid();
+		   //  res.send('User is not existing');
+    return  res.render('login', { logged:'false',error:'User is not existing'});
+
       }
 
       // check pass
       if (user.hash != hash(pass, user.salt)) {
-        return invalid();
+      //  return invalid();
+		
+		    return  res.render('login', { logged:'false',error:'Password entered is incorrect'});
+
       }
 
       req.session.isLoggedIn = true;
@@ -1008,7 +1041,7 @@ router.post('/login', function(req, res) {
     })
 
     function invalid () {
-      return res.render('login', { invalid: true });
+      return res.render('login', { invalid: true ,error:'false' });
     }
 	
 	

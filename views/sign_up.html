@@ -18,8 +18,21 @@
   <link rel="stylesheet" href="css/bootstrap.min.css" />
   <link href="css/font-awesome.min.css" media="screen" rel="stylesheet" />
   <link data-turbolinks-track="true" href="css/application-34ab6c80c76e48d799f77e7e60386577.css" media="screen" rel="stylesheet" />
-
 <style>
+
+
+input[type="checkbox"]{
+  width: 20px; /*Desired width*/
+  height: 20px; /*Desired height*/
+
+}
+
+
+input.addact {
+    width: 20em;  height: 2em;
+}
+
+
 
 .my-error-class {
     color:red;
@@ -50,7 +63,7 @@
     margin: auto;
     padding: 0;
     border: 1px solid #888;
-    width: 80%;
+    width: 40%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
@@ -86,19 +99,18 @@
 
 .modal-header {
     padding: 2px 16px;
-    background-color: #04498d;
-    color: white;
+    background-color: red;
+    color: black;
 }
 
 .modal-body {padding: 2px 16px;}
 
 .modal-footer {
     padding: 2px 16px;
-    background-color: #04498d;
-    color: white;
+    background-color: red;
+    color: black;
 }
 </style>
-
 
 
 
@@ -520,7 +532,7 @@ window.onclick = function(event) {
   <div class="modal-content">
     <div class="modal-header">
       <span class="close">&times;</span>
-      <h2>SenseEgypt</h2>
+      <h2 style="color:white">SenseEgypt</h2>
     </div>
     <div class="modal-body">
      
@@ -528,7 +540,7 @@ window.onclick = function(event) {
 					
     </div>
     <div class="modal-footer">
-      <h3>SenseEgypt </h3>
+      <h3 style="color:white">SenseEgypt </h3>
     </div>
   </div>
 

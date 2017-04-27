@@ -95,7 +95,9 @@
   <div class="col-sm-6 col-xs-12">
 
     <h4 class="breadcrumb">
+	<p id="user_msg">
         Please sign in to access your account.
+		</p>
     </h4>
 
     
@@ -116,7 +118,6 @@
           <input class="form-control" id="user_password" name="pass" type="password" />
           <a href="/forgot" id="forgot_password">Forgot your password?</a>
 		  
-	 <a href="/auth/twitter" id="forgot_password">Link to Twitter</a>
 
 		  
         </div>
@@ -153,6 +154,28 @@
 
 
 </script>
+
+
+  <script>
+
+  
+  
+    $(document).on('page:load ready', function() {
+	
+	
+	var error = <%- JSON.stringify(error) %>;
+	
+	if(error != null && error != "" && error !="undefined"&& error !="false"){
+  		  document.getElementById("user_msg").innerHTML = ""+error;
+
+		  }
+		
+	});
+	
+	
+	
+	</script>
+	
 
 
       </div>

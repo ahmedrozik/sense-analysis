@@ -188,7 +188,14 @@ thead {
 
   	var twitter_account = <%- JSON.stringify(twitter_account) %>;
 
-   var table = document.getElementById("myTableData");
+  	var result = <%- JSON.stringify(result) %>;
+	
+	if(result != "false" || result != 'false'){
+      $('#mydata').show();
+	      $('#result_msg').hide();
+
+
+	var table = document.getElementById("myTableData");
 
     var rowCount = table.rows.length;
     var row = table.insertRow(rowCount);
@@ -198,10 +205,18 @@ thead {
     row.insertCell(2).innerHTML= access_token_secret;
 	row.insertCell(3).innerHTML= '<input type="button" value = "Delete"   onClick="Javacsript:deleteRow(this)">'	;
 		
+	
+	
+	}else{
+	
+	      $('#result_msg').show();
+
+	      $('#mydata').hide();
+
+	
+	}
+	
 	});
-	
-	
-	
 	</script>
 
 
@@ -349,11 +364,19 @@ if(isLogged == true || isLogged == 'true' || isLogged == "true" ){
 		  
 	<div id="adddeviceform">
 	
+	<div id="result_msg" style="display: none;">
+	     <h1>
+		 <p style="color:red;">
+		 <font  face="Times New Roman" size="5"> Authentication Failure, please try again </font>
+		 </p>
+		 </h1>
+
+	</div>
    
 
 	  	   <div class="form-group">
 
-	 <div id="mydata" style="word-wrap: break-word;">
+	 <div id="mydata" style="display: none;word-wrap: break-word;">
 
 <table id="myTableData"  border="2" cellpadding="2">
  <thead>

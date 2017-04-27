@@ -43,7 +43,7 @@ var OAuth = require('oauth').OAuth
       "qu8pVznlr5URezLqEWByr96f8",
       "KDKyqdcmgxxbgekSoQuRcms0HpdRzxyxxevrKaRhBqoTumqRP7",
       "1.0",
-      "http://senseegypt.com/auth/twitter/callback",
+      "http://127.0.0.1:8080/auth/twitter/callback",
       "HMAC-SHA1"
     );
  
@@ -87,7 +87,8 @@ router.get('/auth/twitter/callback', function(req, res, next) {
         if (error) {
           console.log(error);
         //  res.send("Authentication Failure!");
-		  res.redirect('/index'); // Redirect to login page
+ res.redirect('/apps?twitter_account=no&access_token=no&access_token_secret=no&result=false');
+
 
         }
         else {
@@ -98,7 +99,7 @@ router.get('/auth/twitter/callback', function(req, res, next) {
           req.session.oauth.access_token_secret = oauth_access_token_secret;
           console.log(results, req.session.oauth);
         //  res.send("Authentication Successful");
-          res.redirect('/apps?twitter_account='+results["screen_name"]+'+&access_token='+oauth_access_token+'&access_token_secret='+oauth_access_token_secret); // You might actually want to redirect!
+          res.redirect('/apps?twitter_account='+results["screen_name"]+'+&access_token='+oauth_access_token+'&access_token_secret='+oauth_access_token_secret+'&result=true'); // You might actually want to redirect!
         }
       }
     );
@@ -116,14 +117,16 @@ router.get('/apps', function(req, res) {
     access_token = qs.access_token ;
    var access_token_secret=qs.access_token_secret;
    
-      var twitter_account=qs.twitter_account;
+   var twitter_account=qs.twitter_account;
+
+	var result=qs.result;
 
 		console.log("Get APPS  Get access_token"+access_token+" access_token_secret"+access_token_secret);
 
 		
    
      	var email=req.session.user;	
-
+if(result != "false"){
 		  User.findById(email, function (err, user) {
 			  user.twitteraccount=twitter_account;
 		      user.accesstoken=access_token;
@@ -137,14 +140,14 @@ router.get('/apps', function(req, res) {
 
 		  });
   
- 
+}
 
 	
 	
 		
 		
 	
-	   	res.render('apps',{ twitter_account:twitter_account,access_token:access_token,access_token_secret:access_token_secret});
+	   	res.render('apps',{ twitter_account:twitter_account,access_token:access_token,access_token_secret:access_token_secret,result:result});
 		
 		
   // res.render('apps', { title: 'SenseEgypt',logged:'false' });

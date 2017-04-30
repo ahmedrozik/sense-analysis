@@ -1,57 +1,16 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var engines = require('consolidate');
+
 var mongoose = require('mongoose');
 require('express-mongoose');
 var models = require('./models');
 var Sensor = mongoose.model('Sensor');
 var SensorDataMod = mongoose.model('SensorData');
 var mqtt = require('mqtt')
-var fs = require('fs');
-var https = require('https')
-
-var DTW = require('dtw');
-
-var flash = require('express-flash');
 
 
 
 var User = mongoose.model('User');
 var actuatorsList = mongoose.model('ActuatorsList');
-var crypto = require('crypto');
-var shortid = require('shortid');
 var nodemailer = require('nodemailer');
-
-/*
-var s = [50,51,52,53,54,55,56,57,58,59];
-var t = [50,51,52,63,64,65,66,57,58,59];
-var dtw = new DTW();
-var cost = dtw.compute(s, t ,10 );
-var path = dtw.path();
-console.log('Cost: ' + cost);
-console.log('Path: ');
-console.log(path);
-
-*/
-
-var index = require('./routes/index');
-
-var app = express();
-
-var http_host = (process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
-var http_port = (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
-
-
-
-
- 
-
-
 
 
 
@@ -62,28 +21,7 @@ var Twitter = require('twitter');
 
 
 
-app.set('sensorCounter',2);
-app.set('port', http_port);
-app.set('host',http_host);
 
-// view engine setup
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'jade');
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-
- //use favicon
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
-app.use(cookieParser());
-// add session to store the api-key and auth token in the session
-app.use(session({ secret: 'session secret key' }));
-app.use(flash());
-
-app.use(require('stylus').middleware(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
 var client = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
 
 
@@ -108,8 +46,11 @@ mongoose.connect('mongodb://admin:password@ds031721.mongolab.com:31721/egyiotpor
     } else {
 		if(sensors.length > 0){
 			for(var i=0;i<sensors.length;i++){
-				console.log("Registered to "+sensors[i]._id);
+				if(sensors[i].type !=  "actuator"){
             client.subscribe(sensors[i]._id);
+							console.log("Registered to "+sensors[i]._id);
+
+				}
 			}
 	}
 
@@ -311,79 +252,40 @@ transporter.sendMail(mailOptions, function(error, info){
 
 
 
-app.use('/',index);
 
-app.use(function(req, res, next) {
-    if(req.session.api_key){
-		console.log("APP.JS 4");
+setInterval(publichMeasurements, 10*1000);
 
-    res.redirect("/index");
-	}else{
-	  console.log("APP.JS 5");
+function publichMeasurements() {
+	
+	  client.publish("EgyptIOT/Portal/EGYIOT/sensor/STORMQ/TempratureSensor/VJ0M6UCNf14", ""+Math.floor((Math.random() * 35) + 20));
 
-	  console.log("App login ");
-	  
-       //res.render('login');
-     //  res.redirect("/index");
-	req.session['logged'] = 'false';
-res.redirect("/index");
-
-				//res.render("login",{ title: 'ejs' });
-
-	}
-});
+	console.log("Message sent to broker "+Math.floor(Math.random() * 6) + 1  );
 
 
-/// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
 
 
 
-/*
-var server = app.listen(app.get('port'), app.get('host'), function() {
-  console.log('Express server listening on ' + server.address().address + ':' + server.address().port);
-});
-*/
+setInterval(subscribeNewSensors, 10*500);
+
+function subscribeNewSensors() {
+		 Sensor.find({  }, function(err, sensors) {
+    if (err) {
+    } else {
+		if(sensors.length > 0){
+			for(var i=0;i<sensors.length;i++){
+				if(sensors[i].type !=  "actuator"){
+									console.log("Registered to "+sensors[i]._id);
+
+            client.subscribe(sensors[i]._id);
+				}
+			}
+	}
+
+    }
+  });
+  
 
 
-
-var https_host = (process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
-var https_port = (process.env.OPENSHIFT_NODEJS_PORT || 8080);
-
-var key = fs.readFileSync('./key.pem');
-var cert = fs.readFileSync('./cert.pem')
-var https_options = {
-    key: key,
-    cert: cert
-};
-
-
-
-
-var server = app.listen(app.get('port'), app.get('host'), function() {
-  console.log('Express server listening on ' + server.address().address + ':' + server.address().port);
-});
-
-
-module.exports = app;
+}

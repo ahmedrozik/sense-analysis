@@ -30,6 +30,36 @@ var client = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
 
 
 
+var express = require('express')
+var app = express()
+
+
+var http_host = (process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
+var http_port = (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
+
+
+
+app.set('port', http_port);
+app.set('host',http_host);
+
+
+
+app.get('/', function (req, res) {
+  res.send('Hello World!')
+})
+
+
+
+
+var server = app.listen(app.get('port'), app.get('host'), function() {
+  console.log('Express server listening on ' + server.address().address + ':' + server.address().port);
+});
+
+
+module.exports = app;
+
+
+
 
 
 

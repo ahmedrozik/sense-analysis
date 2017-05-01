@@ -284,9 +284,9 @@ transporter.sendMail(mailOptions, function(error, info){
 
 
 
-setInterval(publichMeasurements, 10*500);
+setInterval(publishTempMeasurements, 10*700);
 
-function publichMeasurements() {
+function publishTempMeasurements() {
 	
 	  client.publish("EgyptIOT/Portal/EGYIOT/sensor/STORMQ/TempratureSensor/VJ0M6UCNf14", ""+Math.floor(Math.random() * ((25-23)+1) + 23));
 
@@ -294,6 +294,98 @@ function publichMeasurements() {
 
 
 }
+
+
+
+var motionM=0;
+var counter=0;
+setInterval(publishMotionMeasurements, 10*700);
+function publishMotionMeasurements() {
+	
+	if(counter % 7 == 0 || counter % 9 == 0 || counter % 11 == 0){
+		motionM=1;
+	}else{
+		motionM=0;
+		
+	}
+	  client.publish("EgyptIOT/Portal/EGYIOT/sensor/STORMQ/MotionDetector/N1muezj0M2", ""+motionM);
+
+	console.log(" ####### message sent to broker counter is  "+counter );
+counter=counter+3;
+
+
+}
+
+
+
+
+
+
+var moitureM=0;
+
+setInterval(publishMoitureMeasurements, 10*700);
+function publishMoitureMeasurements() {
+
+
+
+   var now = new Date();
+        if (now.getHours() === 13 || now.getHours() === 14  ) {
+	 	moitureM=Math.floor(Math.random() * ((500-400)+1) + 400);
+
+	  client.publish("EgyptIOT/Portal/EGYIOT/sensor/STORMQ/Moisture/EyjjjnoAz3", ""+moitureM);
+
+        }else{
+				moitureM=Math.floor(Math.random() * ((45-30)+1) + 30);
+
+				  client.publish("EgyptIOT/Portal/EGYIOT/sensor/STORMQ/Moisture/EyjjjnoAz3", ""+moitureM);
+
+			
+		}
+		
+		
+
+}
+
+//&& now.getHours() === 12 && now.getMinutes() === 0
+
+
+var humidityM=0;
+
+setInterval(publishHumidityMeasurements, 10*700);
+function publishHumidityMeasurements() {
+
+				humidityM=Math.floor(Math.random() * ((37-33)+1) + 33);
+
+				  client.publish("EgyptIOT/Portal/EGYIOT/sensor/STORMQ/Humidity/V1t3CSkkQ2", ""+humidityM);
+		
+
+}
+
+
+
+
+var waterM=0;
+
+setInterval(publishWaterPumpMeasurements, 10*700);
+function publishWaterPumpMeasurements() {
+
+		  var now = new Date();
+        if (now.getHours() === 13 || now.getHours() === 14  ) {
+
+				  client.publish("EgyptIOT/Portal/EGYIOT/actuator/STORMQ/WaterPump/V1hMyUyy73", ""+1);
+
+        }else{
+
+				  client.publish("EgyptIOT/Portal/EGYIOT/actuator/STORMQ/WaterPump/V1hMyUyy73", ""+0);
+
+			
+		}
+		
+
+}
+
+
+
 
 
 

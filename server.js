@@ -26,9 +26,10 @@ var client = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
 
 
 
+//var client = mqtt.createClient(1883, "iot.eclipse.org");
 
 
-
+/*
 
 var express = require('express')
 var app = express()
@@ -60,7 +61,7 @@ module.exports = app;
 
 
 
-
+*/
 
 
 
@@ -283,13 +284,13 @@ transporter.sendMail(mailOptions, function(error, info){
 
 
 
-setInterval(publichMeasurements, 10*1000);
+setInterval(publichMeasurements, 10*500);
 
 function publichMeasurements() {
 	
-	  client.publish("EgyptIOT/Portal/EGYIOT/sensor/STORMQ/TempratureSensor/VJ0M6UCNf14", ""+Math.floor((Math.random() * 35) + 20));
+	  client.publish("EgyptIOT/Portal/EGYIOT/sensor/STORMQ/TempratureSensor/VJ0M6UCNf14", ""+Math.floor(Math.random() * ((25-23)+1) + 23));
 
-	console.log("Message sent to broker "+Math.floor(Math.random() * 6) + 1  );
+//	console.log("Message sent to broker "+Math.floor((Math.random() * 35) + 20) );
 
 
 }
@@ -306,7 +307,7 @@ function subscribeNewSensors() {
 		if(sensors.length > 0){
 			for(var i=0;i<sensors.length;i++){
 				if(sensors[i].type !=  "actuator"){
-									console.log("Registered to "+sensors[i]._id);
+						//			console.log("Registered to "+sensors[i]._id);
 
             client.subscribe(sensors[i]._id);
 				}

@@ -30,7 +30,7 @@ var client2 = mqtt.createClient(1883, "iot.eclipse.org");
 
          
 
-/*
+
 
 var express = require('express')
 var app = express()
@@ -62,7 +62,7 @@ module.exports = app;
 
 
 
-*/
+
 
 
 

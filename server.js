@@ -51,7 +51,7 @@ var pbkdf2 = require('pbkdf2');
 
 
 var http_host = (process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
-var http_port = (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
+var http_port = (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080 || 8090);
 
 
 

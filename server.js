@@ -28,12 +28,26 @@ var client = mqtt.createClient(1883, "broker.mqtt-dashboard.com");
 
 var client2 = mqtt.createClient(1883, "iot.eclipse.org");
 
-         
+var express = require('express');
+var app = express();
+
+var http = require('http');
+
+
+var aesjs = require('aes-js');
+
+var pbkdf2 = require('pbkdf2');
+
+// An example 128-bit key 
+//var key = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ];
+ 
+ 
+
+
+//start
 
 
 
-var express = require('express')
-var app = express()
 
 
 var http_host = (process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
@@ -103,6 +117,25 @@ mongoose.connect('mongodb://admin:password@ds031721.mongolab.com:31721/egyiotpor
 	
 	client.on('message', function (topic, message) {
   console.log("Topic name is receive from AUTH &&&  "+ topic + " Message content is  "+message);
+   var key= pbkdf2.pbkdf2Sync('password', 'salt', 1, 256 / 8, 'sha512');
+
+  // Convert text to bytes 
+var textBytes = aesjs.utils.utf8.toBytes(message);
+ 
+// The counter is optional, and if omitted will begin at 1 
+var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
+var encryptedBytes = aesCtr.encrypt(textBytes);
+ 
+// To print or store the binary data, you may convert it to hex 
+var encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
+console.log("Encrypted text is "+encryptedHex);
+// "a338eda3874ed884b6199150d36f49988c90f5c47fe7792b0cf8c7f77eeffd87 
+//  ea145b73e82aefcf2076f881c88879e4e25b1d7b24ba2788" 
+
+client.publish(topic+"/s", encryptedHex);
+
+
+
   var minThreshold , maxThreshold ;
   
 Sensor.findById(topic, function (err, sensor) {
@@ -291,6 +324,28 @@ transporter.sendMail(mailOptions, function(error, info){
 
 client2.on('message', function (topic, message) {
   console.log("Topic name is receive from AUTH &&&  "+ topic + " Message content is  "+message);
+  //////
+  
+     var key= pbkdf2.pbkdf2Sync('password', 'salt', 1, 256 / 8, 'sha512');
+
+  var textBytes = aesjs.utils.utf8.toBytes(message);
+ 
+// The counter is optional, and if omitted will begin at 1 
+var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
+var encryptedBytes = aesCtr.encrypt(textBytes);
+ 
+// To print or store the binary data, you may convert it to hex 
+var encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
+console.log("Encrypted text is "+encryptedHex);
+// "a338eda3874ed884b6199150d36f49988c90f5c47fe7792b0cf8c7f77eeffd87 
+//  ea145b73e82aefcf2076f881c88879e4e25b1d7b24ba2788" 
+
+client2.publish(topic+"/s", encryptedHex);
+
+
+  
+  
+  
   var minThreshold , maxThreshold ;
   
 Sensor.findById(topic, function (err, sensor) {
@@ -610,3 +665,50 @@ function subscribeNewSensors() {
 
 
 }
+
+
+
+
+
+var options = {
+  host: 'iot.senseegypt.com',
+  path: '/'
+};
+setInterval(callHttp, 9999999);
+
+function callHttp() {
+ 
+http.get(options, function(resp){
+  resp.on('data', function(chunk){
+    //do something with chunk
+
+	
+  });
+}).on("error", function(e){
+  console.log("Got error: " + e.message);
+});
+
+
+
+var options2 = {
+  host: 'analysis-senseegypt.rhcloud.com',
+  path: '/'
+};
+
+http.get(options2, function(resp){
+  resp.on('data', function(chunk){
+    //do something with chunk
+
+	
+  });
+}).on("error", function(e){
+});
+
+
+}
+
+
+
+
+
+//End

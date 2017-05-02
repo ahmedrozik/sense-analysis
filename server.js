@@ -34,18 +34,9 @@ var app = express();
 var http = require('http');
 
 
-var aesjs = require('aes-js');
-
-var pbkdf2 = require('pbkdf2');
-
-// An example 128-bit key 
-//var key = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ];
- 
- 
 
 
-//start
-
+var crypto = require('crypto');
 
 
 
@@ -111,28 +102,21 @@ mongoose.connect('mongodb://admin:password@ds031721.mongolab.com:31721/egyiotpor
 });
 	
 	
-	
 
-	
+
 	
 	client.on('message', function (topic, message) {
   console.log("Topic name is receive from AUTH &&&  "+ topic + " Message content is  "+message);
-   var key= pbkdf2.pbkdf2Sync('password', 'salt', 1, 256 / 8, 'sha512');
 
-  // Convert text to bytes 
-var textBytes = aesjs.utils.utf8.toBytes(message);
- 
-// The counter is optional, and if omitted will begin at 1 
-var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
-var encryptedBytes = aesCtr.encrypt(textBytes);
- 
-// To print or store the binary data, you may convert it to hex 
-var encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
-console.log("Encrypted text is "+encryptedHex);
-// "a338eda3874ed884b6199150d36f49988c90f5c47fe7792b0cf8c7f77eeffd87 
-//  ea145b73e82aefcf2076f881c88879e4e25b1d7b24ba2788" 
+//my password should be a user password
+var mykey = crypto.createCipher('aes-256-cbc', 'SenseEgyptIoTPlatform');
+var mystr = mykey.update(message, 'utf8', 'hex')
+mystr+= mykey.final('hex');
 
-client.publish(topic+"/s", encryptedHex);
+console.log(" ###########  Encrypted text is "+mystr);
+
+
+client.publish(topic+"/s", mystr);
 
 
 
@@ -326,21 +310,11 @@ client2.on('message', function (topic, message) {
   console.log("Topic name is receive from AUTH &&&  "+ topic + " Message content is  "+message);
   //////
   
-     var key= pbkdf2.pbkdf2Sync('password', 'salt', 1, 256 / 8, 'sha512');
+    var mykey = crypto.createCipher('aes-256-cbc', 'SenseEgyptIoTPlatform');
+var mystr = mykey.update(message, 'utf8', 'hex')
+mystr+= mykey.final('hex');
 
-  var textBytes = aesjs.utils.utf8.toBytes(message);
- 
-// The counter is optional, and if omitted will begin at 1 
-var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
-var encryptedBytes = aesCtr.encrypt(textBytes);
- 
-// To print or store the binary data, you may convert it to hex 
-var encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
-console.log("Encrypted text is "+encryptedHex);
-// "a338eda3874ed884b6199150d36f49988c90f5c47fe7792b0cf8c7f77eeffd87 
-//  ea145b73e82aefcf2076f881c88879e4e25b1d7b24ba2788" 
-
-client2.publish(topic+"/s", encryptedHex);
+client2.publish(topic+"/s", mystr);
 
 
   
@@ -711,4 +685,5 @@ http.get(options2, function(resp){
 
 
 
-//End
+
+

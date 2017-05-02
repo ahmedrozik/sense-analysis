@@ -641,7 +641,7 @@ function publishWaterPumpMeasurements() {
 
 
 
-setInterval(subscribeNewSensors, 10*500);
+setInterval(subscribeNewSensors, 10*700);
 
 function subscribeNewSensors() {
 		 Sensor.find({  }, function(err, sensors) {
